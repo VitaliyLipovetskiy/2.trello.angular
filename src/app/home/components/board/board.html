@@ -1,0 +1,5 @@
+<p>{{ board.title }}</p>
+@for (list of board.lists; track list.id) {
+  <tr-list [title]="list.title" [cards]="list.cards"></tr-list>
+}
+<button>Додати список</button>
