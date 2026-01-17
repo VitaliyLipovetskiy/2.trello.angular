@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { ICard } from '../../../common/interfaces';
+import { ICard } from '@app/common/interfaces';
 import { Card } from '../card/card';
 
 @Component({

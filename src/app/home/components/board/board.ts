@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
-import { IBoard } from '../../../common/interfaces/board/Iboard.interface';
+import { IBoard } from '@app/common/interfaces';
 import { List } from '../list/list';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 

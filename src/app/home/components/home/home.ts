@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { IBoard } from '../../../common/interfaces';
+import { IBoard } from '@app/common/interfaces';
 import { RouterLink } from '@angular/router';
 
 @Component({

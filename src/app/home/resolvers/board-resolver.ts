@@ -1,5 +1,5 @@
 import { ResolveFn } from '@angular/router';
-import { IBoard } from '../../common/interfaces';
+import { IBoard } from '@app/common/interfaces';
 import { of } from 'rxjs';
 
 export const boardResolver: ResolveFn<IBoard> = (route, state) => {
