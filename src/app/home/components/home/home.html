@@ -2,9 +2,11 @@
   <h1>Мої дошки</h1>
   <div class="container">
     @for (board of boards; track board.id) {
-      <div class="home-board" [style.background]="board.custom?.background">
-        <h4>{{ board.title }}</h4>
-      </div>
+      <a [routerLink]="['board', board.id]">
+        <div class="home-board" [style.background]="board.custom?.background">
+          <h4>{{ board.title }}</h4>
+        </div>
+      </a>
     }
     <button class="board-add">+ Додати дошку</button>
   </div>

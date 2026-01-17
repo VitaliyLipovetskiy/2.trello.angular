@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { ICard } from '../../../common/interfaces';
 import { Card } from '../card/card';
 
@@ -11,6 +11,6 @@ import { Card } from '../card/card';
   standalone: true,
 })
 export class List {
-  @Input() title = '';
-  @Input() cards: ICard[] = [];
+  title = input<string>();
+  cards = input<ICard[]>();
 }

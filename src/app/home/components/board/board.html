@@ -2,10 +2,11 @@
   <header>
     <div class="board-header">
       <div class="board-content">
-        <p>{{ board.title }}</p>
+        <p>{{ board?.title }}</p>
       </div>
 
       <div class="board-home">
+        <a [routerLink]="['']"><-Додому</a>
         <!--        <Link to={'/'}>{'<-Додому'}</Link>-->
       </div>
       <div class="color-picker-wrapper">
@@ -16,12 +17,12 @@
         <!--          value={backgroundColor}-->
         <!--          onChange={handleColorChange}-->
         <!--        ></input>-->
-        <button class="color-swatch"></button>
+        <div class="color-swatch"></div>
       </div>
     </div>
   </header>
   <div class="board-container">
-    @for (list of board.lists; track list.id) {
+    @for (list of board?.lists; track list.id) {
       <tr-list [title]="list.title" [cards]="list.cards"></tr-list>
     }
     <button class="board-list-add-btn">+ Додайте ще один список</button>

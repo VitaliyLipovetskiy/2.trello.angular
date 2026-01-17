@@ -1,17 +1,19 @@
 import { Routes } from '@angular/router';
-import { Board } from './home/components/board/board';
+import { Board, Home } from './home/components/components';
+import { boardResolver } from './home/resolvers/board-resolver';
 
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./home/components/home/home').then((m) => m.Home),
+    component: Home,
   },
   {
-    path: 'board',
+    path: 'board/:id',
     component: Board,
+    resolve: { board: boardResolver },
   },
-  // {
-  //   path: '**',
-  //   loadChildren: () => import('./home/home').then(m => m.Home)
-  // },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ];

@@ -1,9 +1,9 @@
 <div class="board-list">
   <div class="board-list-title-readonly board-list-title">
-    <p>{{ title }}</p>
+    <p>{{ title() }}</p>
   </div>
-  @for (card of cards; track card.id) {
+  @for (card of cards(); track card.id) {
     <tr-card [title]="card.title"></tr-card>
   }
-  <button>Додати карту</button>
+  <button>+ Додати картку</button>
 </div>
