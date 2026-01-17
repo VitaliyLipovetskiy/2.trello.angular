@@ -8,6 +8,7 @@ import { List } from '../list/list';
   templateUrl: './board.html',
   styleUrl: './board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class Board {
   board: IBoard = {

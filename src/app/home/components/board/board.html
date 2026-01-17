@@ -1,5 +1,33 @@
-<p>{{ board.title }}</p>
-@for (list of board.lists; track list.id) {
-  <tr-list [title]="list.title" [cards]="list.cards"></tr-list>
-}
-<button>Додати список</button>
+<div class="board">
+  <header>
+    <div class="board-header">
+      <div class="board-content">
+        <p>{{ board.title }}</p>
+      </div>
+
+      <div class="board-home">
+        <!--        <Link to={'/'}>{'<-Додому'}</Link>-->
+      </div>
+      <div class="color-picker-wrapper">
+        <!--        <input-->
+        <!--          type='color'-->
+        <!--          className='board-color-input'-->
+        <!--          ref={inputRef}-->
+        <!--          value={backgroundColor}-->
+        <!--          onChange={handleColorChange}-->
+        <!--        ></input>-->
+        <button class="color-swatch"></button>
+      </div>
+    </div>
+  </header>
+  <div class="board-container">
+    @for (list of board.lists; track list.id) {
+      <tr-list [title]="list.title" [cards]="list.cards"></tr-list>
+    }
+    <button
+      class='board-list-add-btn'
+    >
+      + Додайте ще один список
+    </button>
+  </div>
+</div>

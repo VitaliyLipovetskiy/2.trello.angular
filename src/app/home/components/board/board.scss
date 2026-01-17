@@ -1,0 +1,104 @@
+$secondary-color: #b0b0b0;
+$secondary-background: #525dce;
+
+.board {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .board-header {
+    display: flex;
+    flex-direction: row;
+    height: 60px;
+    justify-self: flex-start;
+
+    .board-home {
+      position: fixed;
+      height: 60px;
+      width: 150px;
+      left: 0;
+      justify-items: center;
+      align-content: center;
+    }
+
+    .color-picker-wrapper {
+      display: inline-block;
+      position: fixed;
+      right: 0;
+      width: 60px;
+      height: 60px;
+      justify-items: center;
+      align-content: center;
+
+      .board-color-input {
+        opacity: 0;
+        position: absolute;
+        pointer-events: none;
+        width: 0;
+        height: 0;
+        border: none;
+      }
+
+      .color-swatch {
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px solid $secondary-color;
+        cursor: pointer;
+      }
+    }
+
+    .board-content {
+      position: fixed;
+      left: 0;
+      height: 60px;
+      width: 100%;
+      justify-items: center;
+    }
+  }
+
+  .board-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    align-items: start;
+    width: 100vw;
+    height: 100%;
+  }
+
+  .board-container::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  .board-container::-webkit-scrollbar-thumb {
+    background-color: gray;
+    border-radius: 10px;
+  }
+
+  .board-container::-webkit-scrollbar-track {
+    background-color: white;
+    border-radius: 10px;
+  }
+}
+
+
+// todo: move
+
+.board-list-add-btn {
+  display: flex;
+  flex-direction: row;
+  min-width: 260px;
+  padding: 10px;
+  font-size: 16px;
+  align-items: center;
+  color: $secondary-background;
+  background-color: rgba(255, 254, 254, 0.88);
+  border: none;
+  border-radius: 10px;
+}
+
+.board-list-add-btn:hover {
+  cursor: pointer;
+  background-color: $secondary-color;
+}
