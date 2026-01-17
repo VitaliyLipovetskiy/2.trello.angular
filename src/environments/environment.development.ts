@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  baseURL: 'http://localhost:8081',
+  baseURL: 'https://trello-back.shpp.me/vitalii.lypovetsky/api/v1',
 };
