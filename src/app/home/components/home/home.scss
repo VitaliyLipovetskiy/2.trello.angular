@@ -1,0 +1,39 @@
+$secondary-color: #b0b0b0;
+
+.home {
+  display: flex;
+  flex-direction: column;
+
+  h1 {
+    text-align: center;
+  }
+
+  .container {
+    display: grid;
+    justify-self: center;
+    grid-template-columns: 180px 180px 180px 180px;
+    grid-template-rows: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 10px;
+    justify-content: center;
+
+    .board-add {
+      width: 180px;
+      height: 150px;
+      padding: 10px;
+      border-radius: 20px;
+      background-color: #f0f0f0;
+      border: 1px solid $secondary-color;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .home-board {
+      height: 130px;
+      border: 1px solid $secondary-color;
+      padding: 10px;
+      border-radius: 15px;
+      color: black;
+    }
+  }
+}

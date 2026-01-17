@@ -1,12 +1,10 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 import { ICard } from '../../../common/interfaces';
-import {Card} from '../card/card';
+import { Card } from '../card/card';
 
 @Component({
   selector: 'tr-list',
-  imports: [
-    Card
-  ],
+  imports: [Card],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

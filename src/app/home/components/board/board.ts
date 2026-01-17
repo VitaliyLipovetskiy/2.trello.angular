@@ -12,6 +12,7 @@ import { List } from '../list/list';
 })
 export class Board {
   board: IBoard = {
+    id: 1,
     title: 'Моя тестовая доска',
     lists: [
       {
