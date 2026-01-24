@@ -1,32 +1,50 @@
-$primary-color: white;
-$primary-background-element: #3b3b3b;
+@use 'variables' as *;
+@use 'mixins' as *;
 
-.board-card {
+.card {
   display: flex;
   flex-direction: column;
+  position: relative;
   margin-top: 3px;
   border-radius: 5px;
   font-size: 16px;
-  background-color: $primary-background-element;
   border: 1px solid $primary-background-element;
+  justify-content: center;
 
   input {
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid $primary-background-element;
+    border: 1px solid transparent;
     background-color: $primary-background-element;
     color: $primary-color;
   }
 
-  //@include error;
+  .card-btn-remove {
+    color: $secondary-color;
+    background-color: transparent;
+    position: absolute;
+    right: 3px;
+    font-size: 15px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+  }
+
+  .card-btn-remove:hover {
+    cursor: pointer;
+    color: $primary-color;
+    background-color: $primary-background-element;
+    border: 1px solid $secondary-color;
+  }
 }
 
-.board-card:hover {
+.card:hover {
   cursor: pointer;
   border: 1px solid $primary-color;
 }
 
-.board-card-readonly input {
+@include error;
+
+.card-readonly input {
   display: block;
   border: none;
   cursor: pointer;

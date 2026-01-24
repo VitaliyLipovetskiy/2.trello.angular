@@ -22,41 +22,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-$primary-color: white;
-$secondary-color: #b0b0b0;
-$primary-background: #222;
-$primary-background-element: #3b3b3b;
-$secondary-background: #525dce;
-$secondary-background-hover: #6872c6;
-
 a {
   text-decoration: none;
   display: block;
-}
-
-@mixin button {
-  button {
-    width: 100%;
-    padding: 10px;
-    background-color: $primary-background;
-    border: 1px solid $primary-background;
-    color: $primary-color;
-    font-size: 16px;
-    border-radius: 5px;
-    text-align: left;
-  }
-
-  button:hover {
-    cursor: pointer;
-    background-color: $secondary-background;
-    border: 1px solid $primary-color;
-  }
-}
-
-@mixin error {
-  .error p {
-    margin: 0;
-    color: red;
-    font-size: 12px;
-  }
 }

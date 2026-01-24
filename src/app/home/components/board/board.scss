@@ -1,5 +1,4 @@
-$secondary-color: #b0b0b0;
-$secondary-background: #525dce;
+@use 'variables' as *;
 
 .board {
   display: flex;

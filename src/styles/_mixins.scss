@@ -1,0 +1,28 @@
+@use './variables';
+
+@mixin button {
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: variables.$primary-background;
+    border: 1px solid variables.$primary-background;
+    color: variables.$primary-color;
+    font-size: 16px;
+    border-radius: 5px;
+    text-align: left;
+  }
+
+  button:hover {
+    cursor: pointer;
+    background-color: variables.$secondary-background;
+    border: 1px solid variables.$primary-color;
+  }
+}
+
+@mixin error {
+  .error p {
+    margin: 0;
+    color: red;
+    font-size: 12px;
+  }
+}

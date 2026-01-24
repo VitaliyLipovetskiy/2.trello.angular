@@ -1,4 +1,5 @@
-$secondary-color: #b0b0b0;
+@use 'variables' as *;
+@use 'mixins' as *;
 
 .home {
   display: flex;
@@ -11,7 +12,7 @@ $secondary-color: #b0b0b0;
   .container {
     display: grid;
     justify-self: center;
-    grid-template-columns: 180px 180px 180px 180px;
+    grid-template-columns: 180px 180px 180px 180px 180px;
     grid-template-rows: repeat(auto-fill, minmax(130px, 1fr));
     gap: 10px;
     justify-content: center;
@@ -29,11 +30,54 @@ $secondary-color: #b0b0b0;
     }
 
     .home-board {
+      position: relative;
       height: 130px;
       border: 1px solid $secondary-color;
       padding: 10px;
       border-radius: 15px;
       color: black;
+
+      .board-btn-remove {
+        color: $secondary-color;
+        background-color: transparent;
+        position: absolute;
+        top: 3px;
+        right: 3px;
+        font-size: 15px;
+        border-radius: 50%;
+        border: 1px solid transparent;
+      }
+
+      .board-btn-remove:hover {
+        cursor: pointer;
+        color: $primary-color;
+        background-color: $primary-background-element;
+        border: 1px solid $secondary-color;
+      }
+    }
+  }
+
+  @media only screen and (max-width: 1024px) {
+    .container {
+      grid-template-columns: 180px 180px 180px 180px;
+    }
+  }
+
+  @media only screen and (max-width: 767px) {
+    .container {
+      grid-template-columns: 180px 180px 180px;
+    }
+  }
+
+  @media only screen and (max-width: 639px) {
+    .container {
+      grid-template-columns: 180px 180px;
+    }
+  }
+
+  @media only screen and (max-width: 440px) {
+    .container {
+      grid-template-columns: 180px;
     }
   }
 }

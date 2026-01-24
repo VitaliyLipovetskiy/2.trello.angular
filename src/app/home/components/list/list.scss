@@ -1,21 +1,39 @@
-$primary-color: white;
-$primary-background: #222;
-$primary-background-element: #3b3b3b;
+@use 'variables' as *;
+@use 'mixins' as *;
 
-.board-list {
+.list {
   display: flex;
   flex-direction: column;
   min-width: 260px;
+  position: relative;
   background-color: $primary-background;
   color: $primary-color;
   border: 1px solid $primary-background;
   margin: 5px;
   padding: 5px;
   border-radius: 10px;
+
+  .list-btn-remove {
+    color: $secondary-color;
+    background-color: transparent;
+    position: absolute;
+    top: 14px;
+    right: 3px;
+    font-size: 15px;
+    border-radius: 50%;
+    border: 1px solid transparent;
+  }
+
+  .list-btn-remove:hover {
+    cursor: pointer;
+    color: $primary-color;
+    background-color: $primary-background-element;
+    border: 1px solid $secondary-color;
+  }
 }
 
-.board-list-title {
-  margin: 6px;
+.list-title {
+  margin: 6px 24px 6px 6px;
   display: flex;
   flex-direction: column;
   border: 1px solid $primary-background;
@@ -29,14 +47,14 @@ $primary-background-element: #3b3b3b;
     color: $primary-color;
   }
 
-  //@include error;
+  @include error;
 }
 
-.board-list-title-readonly input {
+.list-title-readonly input {
   cursor: pointer;
   background-color: transparent;
 }
 
-.board-list-title-write input {
+.list-title-write input {
   background-color: $primary-background-element;
 }
