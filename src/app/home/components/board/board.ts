@@ -1,11 +1,18 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit, signal,} from '@angular/core';
-import {IBoard, IBoardUpdate, IList, IListCreate} from '@app/common/interfaces';
-import {List} from '../list/list';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {BoardsService} from '@app/home/services/boards-service';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {ListCreate} from '@app/home/components';
-import {form, FormField, pattern, readonly, required} from '@angular/forms/signals';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
+import { IBoard, IBoardUpdate, IList, IListCreate } from '@app/common/interfaces';
+import { List } from '../list/list';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { BoardsService } from '@app/home/services/boards-service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ListCreate } from '@app/home/components';
+import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
 
 @Component({
   selector: 'tr-board',
@@ -119,7 +126,9 @@ export class Board implements OnInit {
     console.log('handleRemoteList', listId);
     this.boardsService.removeListById(this.boardId(), listId).subscribe(({ result }) => {
       if (result === 'Deleted') {
-        this.board?.lists?.filter((list) => list.id !== listId);
+        let lists = this.board?.lists?.filter((list) => list.id !== listId) || [];
+        this.board?.lists?.splice(0, this.board?.lists?.length);
+        this.board?.lists?.push(...lists);
         this.cdRef.markForCheck();
       }
     });

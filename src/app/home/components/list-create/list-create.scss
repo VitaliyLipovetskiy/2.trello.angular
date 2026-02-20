@@ -4,7 +4,7 @@
 .list-add {
   display: flex;
   flex-direction: column;
-  min-width: 260px;
+  width: 260px;
   background-color: $primary-background;
   border: none;
   margin: 5px;
@@ -24,6 +24,10 @@
       background: $primary-background-element;
       color: $primary-color;
       font-size: 16px;
+    }
+
+    .title-invalid {
+      color: red;
     }
 
     @include error;

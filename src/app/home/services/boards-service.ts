@@ -1,4 +1,4 @@
-import {inject, Injectable} from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   IBoard,
   IBoards,
@@ -10,8 +10,8 @@ import {
   IResult,
   IResultCreated,
 } from '@app/common/interfaces';
-import {map, Observable} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
+import { map, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',

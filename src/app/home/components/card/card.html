@@ -5,11 +5,13 @@
   </button>
   <input
     [formField]="titleForm.title"
-    [class.title-invalid]="titleForm.title().invalid()"
+    [class.title-invalid]="
+      titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
+    "
     (click)="handleTitleClick($event)"
     (blur)="handleTitleBlur($event)"
   />
-  @if (titleForm.title().invalid()) {
+  @if (titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())) {
     @for (error of titleForm.title().errors(); track error) {
       <div class="error">{{ error.message }}</div>
     }

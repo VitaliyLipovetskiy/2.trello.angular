@@ -1,8 +1,16 @@
 <div class="list-add">
   @if (listNew) {
     <div class="list-new" [hidden]="!listNew">
-      <input trAutofocus [formField]="titleForm.title" />
-      @if (titleForm.title().invalid()) {
+      <input
+        trAutofocus
+        [formField]="titleForm.title"
+        [class.title-invalid]="
+          titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+        "
+      />
+      @if (
+        titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
+      ) {
         @for (error of titleForm.title().errors(); track error) {
           <div class="error">{{ error.message }}</div>
         }
@@ -10,8 +18,14 @@
       <div class="list-btn">
         <button
           class="list-btn-accept"
-          [class.disabled]="titleForm.title().invalid()"
-          [disabled]="titleForm.title().invalid()"
+          [class.disabled]="
+            titleForm.title().invalid() &&
+            (titleForm.title().dirty() || titleForm.title().touched())
+          "
+          [disabled]="
+            titleForm.title().invalid() &&
+            (titleForm.title().dirty() || titleForm.title().touched())
+          "
           (mousedown)="handleClickAcceptCreateList($event)"
         >
           Додати список

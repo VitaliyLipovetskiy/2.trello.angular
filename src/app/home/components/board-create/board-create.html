@@ -7,7 +7,13 @@
     <h1>Створити дошку</h1>
     <label [htmlFor]="titleForm.title()">Назва дошки*</label>
     <div class="title">
-      <input trAutofocus [formField]="titleForm.title" />
+      <input
+        trAutofocus
+        [formField]="titleForm.title"
+        [class.title-invalid]="
+        titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+      "
+      />
       @if (
         titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
       ) {
@@ -18,7 +24,14 @@
     </div>
     <button
       class="btn-accept"
-      [class.disabled]="this.titleForm.title().invalid()"
+      [class.disabled]="
+        this.titleForm.title().invalid() &&
+        (titleForm.title().dirty() || titleForm.title().touched())
+      "
+      [disabled]="
+        this.titleForm.title().invalid() &&
+        (titleForm.title().dirty() || titleForm.title().touched())
+      "
       (click)="handleAcceptCreateBoard($event)"
     >
       Створити

@@ -40,6 +40,10 @@
         font-weight: bold;
       }
 
+      .title-invalid {
+        color: red;
+      }
+
       @include error;
     }
 

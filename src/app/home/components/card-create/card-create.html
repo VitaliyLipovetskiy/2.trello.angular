@@ -2,7 +2,9 @@
   @if (this.titleModel().newCard) {
     <div class="card-new">
       <textarea class="card-new-input" trAutofocus [formField]="titleForm.title"></textarea>
-      @if (titleForm.title().invalid()) {
+      @if (
+        titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
+      ) {
         @for (error of titleForm.title().errors(); track error) {
           <div class="error">{{ error.message }}</div>
         }
@@ -10,8 +12,14 @@
       <div class="card-btn">
         <button
           class="card-btn-accept"
-          [class.disabled]="this.titleForm.title().invalid()"
-          [disabled]="this.titleForm.title().invalid()"
+          [class.disabled]="
+            this.titleForm.title().invalid() &&
+            (titleForm.title().dirty() || titleForm.title().touched())
+          "
+          [disabled]="
+            this.titleForm.title().invalid() &&
+            (titleForm.title().dirty() || titleForm.title().touched())
+          "
           (mousedown)="handleClickAcceptCreateCard($event)"
         >
           Додати картку

@@ -9,11 +9,11 @@ import {
   output,
   signal,
 } from '@angular/core';
-import {ICard, ICardCreate} from '@app/common/interfaces';
-import {FormsModule} from '@angular/forms';
-import {Card, CardCreate} from '@app/home/components';
-import {form, FormField, pattern, readonly, required} from '@angular/forms/signals';
-import {BoardsService} from '@app/home/services/boards-service';
+import { ICard, ICardCreate } from '@app/common/interfaces';
+import { FormsModule } from '@angular/forms';
+import { Card, CardCreate } from '@app/home/components';
+import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
+import { BoardsService } from '@app/home/services/boards-service';
 
 @Component({
   selector: 'tr-list',

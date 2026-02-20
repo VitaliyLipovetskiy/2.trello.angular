@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, output, signal} from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {form, FormField, hidden, pattern, required} from '@angular/forms/signals';
-import {AutofocusDirective} from '@app/helpers/autofocus.directive';
+import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { form, FormField, hidden, pattern, required } from '@angular/forms/signals';
+import { AutofocusDirective } from '@app/helpers/autofocus.directive';
 
 @Component({
   selector: 'tr-card-create',

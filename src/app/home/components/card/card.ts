@@ -8,9 +8,9 @@ import {
   output,
   signal,
 } from '@angular/core';
-import {BoardsService} from '@app/home/services/boards-service';
-import {form, FormField, pattern, readonly, required} from '@angular/forms/signals';
-import {ICardUpdate} from '@app/common/interfaces';
+import { BoardsService } from '@app/home/services/boards-service';
+import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
+import { ICardUpdate } from '@app/common/interfaces';
 
 @Component({
   selector: 'tr-card',

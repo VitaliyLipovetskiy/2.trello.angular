@@ -1,4 +1,4 @@
-import {IList} from './list.interface';
+import { IList } from './list.interface';
 
 export interface IBoards {
   boards: IBoard[];

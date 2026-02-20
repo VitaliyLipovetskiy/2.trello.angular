@@ -1,8 +1,14 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, inject, OnInit,} from '@angular/core';
-import {IBoard} from '@app/common/interfaces';
-import {ActivatedRoute, RouterLink} from '@angular/router';
-import {BoardCreate} from '@app/home/components';
-import {BoardsService} from '@app/home/services/boards-service';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+} from '@angular/core';
+import { IBoard } from '@app/common/interfaces';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { BoardCreate } from '@app/home/components';
+import { BoardsService } from '@app/home/services/boards-service';
 
 @Component({
   selector: 'tr-home',

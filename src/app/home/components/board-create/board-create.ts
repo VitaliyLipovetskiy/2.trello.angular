@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, output, signal} from '@angular/core';
-import {FormBuilder, ReactiveFormsModule} from '@angular/forms';
-import {AutofocusDirective} from '@app/helpers/autofocus.directive';
-import {form, FormField, pattern, required} from '@angular/forms/signals';
+import { ChangeDetectionStrategy, Component, inject, OnInit, output, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { AutofocusDirective } from '@app/helpers/autofocus.directive';
+import { form, FormField, pattern, required } from '@angular/forms/signals';
 
 @Component({
   selector: 'tr-board-create',
