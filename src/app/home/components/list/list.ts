@@ -9,11 +9,12 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { ICard, ICardCreate } from '@app/common/interfaces';
+import { ICard, ICardCreate, IListUpdate } from '@app/common/interfaces';
 import { FormsModule } from '@angular/forms';
 import { Card, CardCreate } from '@app/home/components';
 import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
 import { BoardsService } from '@app/home/services/boards-service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'tr-list',
@@ -25,6 +26,7 @@ import { BoardsService } from '@app/home/services/boards-service';
 export class List implements OnInit {
   private readonly boardsService = inject(BoardsService);
   private readonly cdRef = inject(ChangeDetectorRef);
+  private readonly toastr = inject(ToastrService);
   boardId = input.required<number>();
   listId = input.required<number>();
   title = input.required<string>();
@@ -54,12 +56,24 @@ export class List implements OnInit {
   }
 
   handleRemoveCard(cardId: number) {
-    this.boardsService.removeCardById(this.boardId(), cardId).subscribe(({ result }) => {
-      if (result === 'Deleted') {
-        this.cards.set(this.cards().filter((card) => card.id !== cardId));
-        this.cdRef.markForCheck();
+    try {
+      this.boardsService.removeCardById(this.boardId(), cardId).subscribe(({ result }) => {
+        if (result === 'Deleted') {
+          this.cards.set(this.cards().filter((card) => card.id !== cardId));
+          this.cdRef.markForCheck();
+          this.toastr.success('Card removed successfully!', 'Success!');
+        } else {
+          this.toastr.error('Card not deleted!', 'Error!');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        this.toastr.error(error.message, 'Error!');
+      } else {
+        throw error;
       }
-    });
+    }
   }
 
   handleTitleClick(e: Event) {
@@ -81,15 +95,28 @@ export class List implements OnInit {
     }
     this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
     if (value.trim() !== this.title().trim()) {
-      this.boardsService
-        .updateListById(this.boardId(), this.listId(), {
-          title: value.trim(),
-        })
-        .subscribe(({ result }) => {
-          if (result === 'Updated') {
-            this.titleModel.set({ ...this.titleModel(), title: value.trim() });
-          }
-        });
+      const listData: IListUpdate = {
+        title: value.trim(),
+      };
+      try {
+        this.boardsService
+          .updateListById(this.boardId(), this.listId(), listData)
+          .subscribe(({ result }) => {
+            if (result === 'Updated') {
+              this.titleModel.set({ ...this.titleModel(), title: value.trim() });
+              this.toastr.success('List updated successfully!', 'Success!');
+            } else {
+              this.toastr.error('List not updated!', 'Error!');
+            }
+          });
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+          this.toastr.error(error.message, 'Error!');
+        } else {
+          throw error;
+        }
+      }
       this.titleForm().reset();
     }
   }
@@ -103,12 +130,24 @@ export class List implements OnInit {
           .map((c) => c.position)
           .reduce((a, b) => Math.max(a, b), 0) + 1,
     };
-    this.boardsService.createCard(this.boardId(), newCard).subscribe(({ result, id }) => {
-      if (result === 'Created') {
-        const card: ICard = { id, title, position: newCard.position, users: [] };
-        this.cards().push(card);
-        this.cdRef.markForCheck();
+    try {
+      this.boardsService.createCard(this.boardId(), newCard).subscribe(({ result, id }) => {
+        if (result === 'Created') {
+          const card: ICard = { id, title, position: newCard.position, users: [] };
+          this.cards().push(card);
+          this.cdRef.markForCheck();
+          this.toastr.success('Card created successfully!', 'Success!');
+        } else {
+          this.toastr.error('Card not created!', 'Error!');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        this.toastr.error(error.message, 'Error!');
+      } else {
+        throw error;
       }
-    });
+    }
   }
 }

@@ -11,6 +11,7 @@ import {
 import { BoardsService } from '@app/home/services/boards-service';
 import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
 import { ICardUpdate } from '@app/common/interfaces';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'tr-card',
@@ -22,6 +23,7 @@ import { ICardUpdate } from '@app/common/interfaces';
 export class Card implements OnInit {
   private readonly boardsService = inject(BoardsService);
   private readonly cdRef = inject(ChangeDetectorRef);
+  private readonly toastr = inject(ToastrService);
   boardId = input.required<number>();
   listId = input.required<number>();
   cardId = input.required<number>();
@@ -73,13 +75,25 @@ export class Card implements OnInit {
         title: value.trim(),
         list_id: this.listId(),
       };
-      this.boardsService
-        .updateCardById(this.boardId(), this.cardId(), cardData)
-        .subscribe(({ result }) => {
-          if (result === 'Updated') {
-            this.titleModel.set({ ...this.titleModel(), title: value.trim() });
-          }
-        });
+      try {
+        this.boardsService
+          .updateCardById(this.boardId(), this.cardId(), cardData)
+          .subscribe(({ result }) => {
+            if (result === 'Updated') {
+              this.titleModel.set({ ...this.titleModel(), title: value.trim() });
+              this.toastr.success('Card updated successfully!', 'Success!');
+            } else {
+              this.toastr.error('Card not updated!', 'Error!');
+            }
+          });
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+          this.toastr.error(error.message, 'Error!');
+        } else {
+          throw error;
+        }
+      }
       this.titleForm().reset();
     }
   }

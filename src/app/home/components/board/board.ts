@@ -13,6 +13,7 @@ import { BoardsService } from '@app/home/services/boards-service';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ListCreate } from '@app/home/components';
 import { form, FormField, pattern, readonly, required } from '@angular/forms/signals';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'tr-board',
@@ -25,6 +26,7 @@ export class Board implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly boardsService = inject(BoardsService);
   private readonly cdRef = inject(ChangeDetectorRef);
+  private readonly toastr = inject(ToastrService);
   boardId = signal<number>(0);
   board?: IBoard;
   titleModel = signal({ title: '', backgroundColor: '', titleReadonly: true });
@@ -68,11 +70,23 @@ export class Board implements OnInit {
         title: this.titleForm.title().value(),
         custom: { background: value },
       };
-      this.boardsService.updateBoard(this.boardId(), boardData).subscribe(({ result }) => {
-        if (result === 'Updated') {
-          this.titleModel.set({ ...this.titleModel(), backgroundColor: value });
+      try {
+        this.boardsService.updateBoard(this.boardId(), boardData).subscribe(({ result }) => {
+          if (result === 'Updated') {
+            this.titleModel.set({ ...this.titleModel(), backgroundColor: value });
+            this.toastr.success('Board updated successfully!', 'Success!');
+          } else {
+            this.toastr.error('Board not updated!', 'Error!');
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+          this.toastr.error(error.message, 'Error!');
+        } else {
+          throw error;
         }
-      });
+      }
     }
   }
 
@@ -98,11 +112,23 @@ export class Board implements OnInit {
       const boardData: IBoardUpdate = {
         title: value.trim(),
       };
-      this.boardsService.updateBoard(this.boardId(), boardData).subscribe(({ result }) => {
-        if (result === 'Updated') {
-          this.titleModel.set({ ...this.titleModel(), title: value.trim() });
+      try {
+        this.boardsService.updateBoard(this.boardId(), boardData).subscribe(({ result }) => {
+          if (result === 'Updated') {
+            this.titleModel.set({ ...this.titleModel(), title: value.trim() });
+            this.toastr.success('Board updated successfully!', 'Success!');
+          } else {
+            this.toastr.error('Board not updated!', 'Error!');
+          }
+        });
+      } catch (error) {
+        console.log(error);
+        if (error instanceof Error) {
+          this.toastr.error(error.message, 'Error!');
+        } else {
+          throw error;
         }
-      });
+      }
       this.titleForm().reset();
     }
   }
@@ -112,25 +138,48 @@ export class Board implements OnInit {
       title,
       position: (this.board?.lists?.length || 0) + 1,
     };
-    this.boardsService.createList(this.boardId(), listData).subscribe(({ result, id }) => {
-      if (result === 'Created') {
-        const list: IList = { id, title, position: listData.position, cards: [] };
-        this.board?.lists?.push(list);
-        this.cdRef.markForCheck();
+    try {
+      this.boardsService.createList(this.boardId(), listData).subscribe(({ result, id }) => {
+        if (result === 'Created') {
+          const list: IList = { id, title, position: listData.position, cards: [] };
+          this.board?.lists?.push(list);
+          this.cdRef.markForCheck();
+          this.toastr.success('List created successfully!', 'Success!');
+        } else {
+          this.toastr.error('List not created!', 'Error!');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        this.toastr.error(error.message, 'Error!');
+      } else {
+        throw error;
       }
-    });
+    }
     this.titleForm().reset();
   }
 
   handleRemoteList(listId: number) {
-    console.log('handleRemoteList', listId);
-    this.boardsService.removeListById(this.boardId(), listId).subscribe(({ result }) => {
-      if (result === 'Deleted') {
-        let lists = this.board?.lists?.filter((list) => list.id !== listId) || [];
-        this.board?.lists?.splice(0, this.board?.lists?.length);
-        this.board?.lists?.push(...lists);
-        this.cdRef.markForCheck();
+    try {
+      this.boardsService.removeListById(this.boardId(), listId).subscribe(({ result }) => {
+        if (result === 'Deleted') {
+          let lists = this.board?.lists?.filter((list) => list.id !== listId) || [];
+          this.board?.lists?.splice(0, this.board?.lists?.length);
+          this.board?.lists?.push(...lists);
+          this.cdRef.markForCheck();
+          this.toastr.success('List deleted successfully!', 'Success!');
+        } else {
+          this.toastr.error('List not deleted!', 'Error!');
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      if (error instanceof Error) {
+        this.toastr.error(error.message, 'Error!');
+      } else {
+        throw error;
       }
-    });
+    }
   }
 }

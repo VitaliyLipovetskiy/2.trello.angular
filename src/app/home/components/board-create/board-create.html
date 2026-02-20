@@ -11,8 +11,8 @@
         trAutofocus
         [formField]="titleForm.title"
         [class.title-invalid]="
-        titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
-      "
+          titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+        "
       />
       @if (
         titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
