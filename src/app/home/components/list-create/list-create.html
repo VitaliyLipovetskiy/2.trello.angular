@@ -1,0 +1,27 @@
+<div class="list-add">
+  @if (listNew) {
+    <div class="list-new" [hidden]="!listNew">
+      <input trAutofocus [formField]="titleForm.title" />
+      @if (titleForm.title().invalid()) {
+        @for (error of titleForm.title().errors(); track error) {
+          <div class="error">{{ error.message }}</div>
+        }
+      }
+      <div class="list-btn">
+        <button
+          class="list-btn-accept"
+          [class.disabled]="titleForm.title().invalid()"
+          [disabled]="titleForm.title().invalid()"
+          (mousedown)="handleClickAcceptCreateList($event)"
+        >
+          Додати список
+        </button>
+        <button class="list-btn-close" (mousedown)="handleClickCloseCreateList($event)">
+          &times;
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button class="list-add-btn" (click)="handleClickAddList()">+ Додайте ще один список</button>
+  }
+</div>

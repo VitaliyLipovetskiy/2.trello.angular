@@ -1,0 +1,27 @@
+<div class="add-card">
+  @if (this.titleModel().newCard) {
+    <div class="card-new">
+      <textarea class="card-new-input" trAutofocus [formField]="titleForm.title"></textarea>
+      @if (titleForm.title().invalid()) {
+        @for (error of titleForm.title().errors(); track error) {
+          <div class="error">{{ error.message }}</div>
+        }
+      }
+      <div class="card-btn">
+        <button
+          class="card-btn-accept"
+          [class.disabled]="this.titleForm.title().invalid()"
+          [disabled]="this.titleForm.title().invalid()"
+          (mousedown)="handleClickAcceptCreateCard($event)"
+        >
+          Додати картку
+        </button>
+        <button class="card-btn-close" (mousedown)="handleClickCloseCreateCard($event)">
+          &times;
+        </button>
+      </div>
+    </div>
+  } @else {
+    <button class="card-add-btn" (click)="handleClickAddCard($event)">+ Додати картку</button>
+  }
+</div>

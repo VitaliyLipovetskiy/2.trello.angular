@@ -8,8 +8,13 @@
   margin-top: 3px;
   border-radius: 5px;
   font-size: 16px;
-  border: 1px solid $primary-background-element;
+  border: 1px solid transparent;
   justify-content: center;
+
+  &:hover {
+    cursor: pointer;
+    border: 1px solid $primary-color;
+  }
 
   input {
     padding: 10px;
@@ -19,33 +24,28 @@
     color: $primary-color;
   }
 
-  .card-btn-remove {
-    color: $secondary-color;
-    background-color: transparent;
-    position: absolute;
-    right: 3px;
-    font-size: 15px;
-    border-radius: 50%;
-    border: 1px solid transparent;
+  @include btn__action('remove', 12px, 8px, 15px);
+
+  .title-invalid {
+    color: red;
   }
 
-  .card-btn-remove:hover {
-    cursor: pointer;
-    color: $primary-color;
-    background-color: $primary-background-element;
-    border: 1px solid $secondary-color;
-  }
+  @include error;
 }
 
-.card:hover {
-  cursor: pointer;
-  border: 1px solid $primary-color;
+.btn-remove {
+  color: $secondary-color;
+  background-color: transparent;
+  position: absolute;
+  right: 3px;
+  font-size: 15px;
+  border-radius: 50%;
+  border: 1px solid transparent;
 }
 
-@include error;
-
-.card-readonly input {
-  display: block;
-  border: none;
+.btn-remove:hover {
   cursor: pointer;
+  color: $primary-color;
+  background-color: $primary-background-element;
+  border: 1px solid $secondary-color;
 }

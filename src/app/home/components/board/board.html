@@ -1,30 +1,62 @@
 <div class="board">
   <header>
-    <div class="board-header">
-      <div class="board-content">
-        <p>{{ board?.title }}</p>
+    <div class="header">
+      <div class="content">
+        <div
+          class="title"
+          [class.title-readonly]="titleModel().titleReadonly"
+          [class.title-edit]="!titleModel().titleReadonly"
+        >
+          <input
+            type="text"
+            [formField]="titleForm.title"
+            [class.title-invalid]="
+              titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+            "
+            (click)="handleTitleClick($event)"
+            (blur)="handleTitleBlur($event)"
+          />
+          @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
+            @for (error of titleForm.title().errors(); track error) {
+              <div class="error">{{ error.message }}</div>
+            }
+          }
+        </div>
       </div>
-
-      <div class="board-home">
+      <div class="home">
         <a [routerLink]="['']"><-Додому</a>
-        <!--        <Link to={'/'}>{'<-Додому'}</Link>-->
       </div>
       <div class="color-picker-wrapper">
-        <!--        <input-->
-        <!--          type='color'-->
-        <!--          className='board-color-input'-->
-        <!--          ref={inputRef}-->
-        <!--          value={backgroundColor}-->
-        <!--          onChange={handleColorChange}-->
-        <!--        ></input>-->
-        <div class="color-swatch"></div>
+        <input
+          #inputColor
+          type="color"
+          class="color-input"
+          value="{{ this.titleModel().backgroundColor }}"
+          (change)="handleColorChange($event)"
+        />
+        <button
+          class="color-swatch"
+          [style]="{
+            backgroundColor: this.titleModel().backgroundColor,
+            color: this.titleModel().backgroundColor,
+          }"
+          (click)="inputColor.click()"
+        >
+          C
+        </button>
       </div>
     </div>
   </header>
-  <div class="board-container">
+  <div class="container">
     @for (list of board?.lists; track list.id) {
-      <tr-list [title]="list.title" [cards]="list.cards"></tr-list>
+      <tr-list
+        [boardId]="boardId()"
+        [listId]="list.id"
+        [title]="list.title"
+        [cards]="list.cards"
+        (handleRemoteList)="handleRemoteList($event)"
+      ></tr-list>
     }
-    <button class="board-list-add-btn">+ Додайте ще один список</button>
+    <tr-list-create (handleCreateList)="handleCreateList($event)"></tr-list-create>
   </div>
 </div>

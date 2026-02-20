@@ -1,0 +1,86 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.add-card {
+  display: flex;
+  flex-direction: column;
+  background-color: $primary-background;
+  border: none;
+  margin: 6px;
+  border-radius: 10px;
+}
+
+.card-new {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-radius: 10px;
+
+  textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid $secondary-background;
+    background: $primary-background-element;
+    color: $primary-color;
+    font-size: 16px;
+    resize: none;
+  }
+
+  @include error;
+}
+
+.card-btn {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+
+  button {
+    padding: 5px 10px 5px 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+  }
+}
+
+.card-btn-accept {
+  background-color: $secondary-background;
+  color: white;
+}
+
+.card-btn-accept:hover {
+  cursor: pointer;
+  background-color: $secondary-background-hover;
+}
+
+.card-btn-accept.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.card-btn-close {
+  background-color: $primary-background;
+  color: $primary-color;
+}
+
+.card-btn-close:hover {
+  color: $primary-color;
+  cursor: pointer;
+  background-color: #3b3b3b;
+}
+
+.card-add-btn {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  font-size: 16px;
+  align-items: center;
+  color: $secondary-background;
+  background-color: $primary-background;
+  border: none;
+  border-radius: 10px;
+}
+
+.card-add-btn:hover {
+  cursor: pointer;
+  background-color: $secondary-color;
+}

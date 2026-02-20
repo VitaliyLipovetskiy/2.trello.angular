@@ -13,26 +13,10 @@
   padding: 5px;
   border-radius: 10px;
 
-  .list-btn-remove {
-    color: $secondary-color;
-    background-color: transparent;
-    position: absolute;
-    top: 14px;
-    right: 3px;
-    font-size: 15px;
-    border-radius: 50%;
-    border: 1px solid transparent;
-  }
-
-  .list-btn-remove:hover {
-    cursor: pointer;
-    color: $primary-color;
-    background-color: $primary-background-element;
-    border: 1px solid $secondary-color;
-  }
+  @include btn__action('remove', 8px, 8px, 15px);
 }
 
-.list-title {
+.title {
   margin: 6px 24px 6px 6px;
   display: flex;
   flex-direction: column;
@@ -47,14 +31,35 @@
     color: $primary-color;
   }
 
+  .title-invalid {
+    color: red;
+  }
+
   @include error;
 }
 
-.list-title-readonly input {
+.title-readonly input {
   cursor: pointer;
   background-color: transparent;
 }
 
-.list-title-write input {
+.title-edit input {
   background-color: $primary-background-element;
+}
+
+.card-add-btn {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  font-size: 16px;
+  align-items: center;
+  color: $secondary-background;
+  background-color: $primary-background;
+  border: none;
+  border-radius: 10px;
+}
+
+.card-add-btn:hover {
+  cursor: pointer;
+  background-color: $secondary-color;
 }

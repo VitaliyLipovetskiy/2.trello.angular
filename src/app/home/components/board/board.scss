@@ -1,102 +1,114 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 .board {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
 
-  .board-header {
+.header {
+  display: flex;
+  flex-direction: row;
+  height: 60px;
+  justify-self: flex-start;
+}
+
+.home {
+  position: fixed;
+  height: 60px;
+  width: 150px;
+  left: 0;
+  justify-items: center;
+  align-content: center;
+}
+
+.color-picker-wrapper {
+  display: inline-block;
+  position: fixed;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  justify-items: center;
+  align-content: center;
+}
+
+.color-input {
+  opacity: 0;
+  position: absolute;
+  pointer-events: none;
+  width: 0;
+  height: 0;
+  border: none;
+}
+
+.color-swatch {
+  display: block;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid $secondary-color;
+  cursor: pointer;
+}
+
+.content {
+  position: fixed;
+  left: 0;
+  height: 60px;
+  width: 100%;
+  justify-items: center;
+
+  .title {
     display: flex;
-    flex-direction: row;
-    height: 60px;
-    justify-self: flex-start;
+    flex-direction: column;
 
-    .board-home {
-      position: fixed;
-      height: 60px;
-      width: 150px;
-      left: 0;
-      justify-items: center;
-      align-content: center;
+    input {
+      width: auto;
+      padding: 10px;
+      text-align: center;
     }
 
-    .color-picker-wrapper {
-      display: inline-block;
-      position: fixed;
-      right: 0;
-      width: 60px;
-      height: 60px;
-      justify-items: center;
-      align-content: center;
-
-      .board-color-input {
-        opacity: 0;
-        position: absolute;
-        pointer-events: none;
-        width: 0;
-        height: 0;
-        border: none;
-      }
-
-      .color-swatch {
-        display: block;
-        width: 50px;
-        height: 50px;
-        border-radius: 50%;
-        border: 1px solid $secondary-color;
-        cursor: pointer;
-      }
+    .title-invalid {
+      color: red;
     }
 
-    .board-content {
-      position: fixed;
-      left: 0;
-      height: 60px;
-      width: 100%;
-      justify-items: center;
-    }
+    @include error;
   }
 
-  .board-container {
-    display: flex;
-    flex-wrap: nowrap;
-    overflow-x: scroll;
-    align-items: start;
-    width: 100vw;
-    height: 100%;
+  .title-readonly input {
+    display: block;
+    font-size: 2em;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
   }
 
-  .board-container::-webkit-scrollbar {
+  .title-edit input {
+    padding: 5px;
+    font-size: 2em;
+    font-weight: bold;
+  }
+}
+
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  align-items: start;
+  width: 100vw;
+  height: 100%;
+
+  &::-webkit-scrollbar {
     height: 8px;
   }
 
-  .board-container::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background-color: gray;
     border-radius: 10px;
   }
 
-  .board-container::-webkit-scrollbar-track {
+  &::-webkit-scrollbar-track {
     background-color: white;
     border-radius: 10px;
   }
-}
-
-// todo: move
-
-.board-list-add-btn {
-  display: flex;
-  flex-direction: row;
-  min-width: 260px;
-  padding: 10px;
-  font-size: 16px;
-  align-items: center;
-  color: $secondary-background;
-  background-color: rgba(255, 254, 254, 0.88);
-  border: none;
-  border-radius: 10px;
-}
-
-.board-list-add-btn:hover {
-  cursor: pointer;
-  background-color: $secondary-color;
 }

@@ -1,9 +1,35 @@
 <div class="list">
-  <div class="list-title-readonly list-title">
-    <p>{{ title() }}</p>
+  <button class="btn__remove" (click)="handleClickRemoveList($event)">
+    <span></span>
+    <span></span>
+  </button>
+  <div
+    class="title"
+    [class.title-readonly]="titleModel().titleReadonly"
+    [class.title-edit]="!titleModel().titleReadonly"
+  >
+    <input
+      [formField]="titleForm.title"
+      [class.title-invalid]="
+        titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+      "
+      (click)="handleTitleClick($event)"
+      (blur)="handleTitleBlur($event)"
+    />
+    @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
+      @for (error of titleForm.title().errors(); track error) {
+        <div class="error">{{ error.message }}</div>
+      }
+    }
   </div>
   @for (card of cards(); track card.id) {
-    <tr-card [title]="card.title"></tr-card>
+    <tr-card
+      [boardId]="boardId()"
+      [listId]="listId()"
+      [cardId]="card.id"
+      [title]="card.title"
+      (handleRemoteCard)="handleRemoveCard($event)"
+    ></tr-card>
   }
-  <button>+ Додати картку</button>
+  <tr-card-create (handleCreateCard)="handleCreateCard($event)"></tr-card-create>
 </div>

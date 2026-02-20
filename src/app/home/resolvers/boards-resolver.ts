@@ -1,16 +1,16 @@
-import { inject, Injectable } from '@angular/core';
-import { Resolve } from '@angular/router';
-import { Observable } from 'rxjs';
-import { IBoard } from '@app/common/interfaces';
-import { BoardsService } from '@app/home/services/boards-service';
+import {inject, Injectable} from '@angular/core';
+import {Resolve} from '@angular/router';
+import {Observable} from 'rxjs';
+import {IBoards} from '@app/common/interfaces';
+import {BoardsService} from '@app/home/services/boards-service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class BoardsResolver implements Resolve<IBoard[]> {
+export class BoardsResolver implements Resolve<IBoards> {
   boardService = inject(BoardsService);
 
-  resolve(): Observable<IBoard[]> {
+  resolve(): Observable<IBoards> {
     return this.boardService.getBoards();
   }
 }

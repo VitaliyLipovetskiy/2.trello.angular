@@ -1,3 +1,17 @@
-<div class="card-readonly card">
-  <p>{{ title() }}</p>
+<div class="card">
+  <button class="btn__remove" (click)="handleClickRemoveCard($event)">
+    <span></span>
+    <span></span>
+  </button>
+  <input
+    [formField]="titleForm.title"
+    [class.title-invalid]="titleForm.title().invalid()"
+    (click)="handleTitleClick($event)"
+    (blur)="handleTitleBlur($event)"
+  />
+  @if (titleForm.title().invalid()) {
+    @for (error of titleForm.title().errors(); track error) {
+      <div class="error">{{ error.message }}</div>
+    }
+  }
 </div>

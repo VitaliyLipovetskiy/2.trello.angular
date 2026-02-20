@@ -1,0 +1,88 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.list-add {
+  display: flex;
+  flex-direction: column;
+  min-width: 260px;
+  background-color: $primary-background;
+  border: none;
+  margin: 5px;
+  border-radius: 10px;
+
+  .list-new {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    border-radius: 10px;
+    padding: 5px;
+
+    & input {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid $secondary-background;
+      background: $primary-background-element;
+      color: $primary-color;
+      font-size: 16px;
+    }
+
+    @include error;
+
+    .list-btn {
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+
+      button {
+        padding: 5px 10px 5px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+        border: none;
+      }
+
+      & .list-btn-accept {
+        background-color: $secondary-background;
+        color: white;
+
+        &:hover {
+          cursor: pointer;
+          background-color: $secondary-background-hover;
+        }
+
+        &.disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+      }
+
+      & .list-btn-close {
+        background-color: $primary-background;
+        color: $primary-color;
+
+        &:hover {
+          color: $primary-color;
+          cursor: pointer;
+          background-color: #3b3b3b;
+        }
+      }
+    }
+  }
+
+  &-btn {
+    display: flex;
+    flex-direction: row;
+    min-width: 260px;
+    padding: 10px;
+    font-size: 16px;
+    align-items: center;
+    color: $primary-color;
+    background-color: $primary-background-element;
+    border: none;
+    border-radius: 10px;
+  }
+
+  &-btn:hover {
+    cursor: pointer;
+    background-color: $secondary-color;
+  }
+}
