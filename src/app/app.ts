@@ -1,13 +1,11 @@
-import { Component, computed, inject } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ProgressBar } from '@app/common/components';
 
 @Component({
   selector: 'tr-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ProgressBar],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
-  protected readonly router = inject(Router);
-  isNavigating = computed(() => !!this.router.currentNavigation());
-}
+export class App {}

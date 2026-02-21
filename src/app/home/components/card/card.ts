@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   inject,
   input,
@@ -22,7 +21,6 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class Card implements OnInit {
   private readonly boardsService = inject(BoardsService);
-  private readonly cdRef = inject(ChangeDetectorRef);
   private readonly toastr = inject(ToastrService);
   boardId = input.required<number>();
   listId = input.required<number>();

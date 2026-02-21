@@ -1,7 +1,14 @@
 <div class="add-card">
   @if (this.titleModel().newCard) {
     <div class="card-new">
-      <textarea class="card-new-input" trAutofocus [formField]="titleForm.title"></textarea>
+      <textarea
+        class="card-new-input"
+        trAutofocus
+        [formField]="titleForm.title"
+        [class.title-invalid]="
+          titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
+        "
+      ></textarea>
       @if (
         titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
       ) {

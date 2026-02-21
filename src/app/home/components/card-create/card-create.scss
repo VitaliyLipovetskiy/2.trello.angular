@@ -26,6 +26,10 @@
     resize: none;
   }
 
+  .title-invalid {
+    color: red;
+  }
+
   @include error;
 }
 
