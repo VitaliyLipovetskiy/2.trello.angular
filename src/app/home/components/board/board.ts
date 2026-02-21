@@ -164,7 +164,7 @@ export class Board implements OnInit {
     try {
       this.boardsService.removeListById(this.boardId(), listId).subscribe(({ result }) => {
         if (result === 'Deleted') {
-          let lists = this.board?.lists?.filter((list) => list.id !== listId) || [];
+          const lists = this.board?.lists?.filter((list) => list.id !== listId) || [];
           this.board?.lists?.splice(0, this.board?.lists?.length);
           this.board?.lists?.push(...lists);
           this.cdRef.markForCheck();

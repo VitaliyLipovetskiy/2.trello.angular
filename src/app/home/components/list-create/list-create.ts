@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, output, signal, ViewChild } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { form, FormField, pattern, required } from '@angular/forms/signals';
+import { form, FormField, hidden, pattern, required } from '@angular/forms/signals';
 import { AutofocusDirective } from '@app/helpers/autofocus.directive';
 
 @Component({
@@ -12,24 +12,34 @@ import { AutofocusDirective } from '@app/helpers/autofocus.directive';
 })
 export class ListCreate {
   handleCreateList = output<string>();
-  listNew = false;
-  titleModel = signal({ title: '' });
+  titleModel = signal({ title: '', newList: false });
   titleForm = form(this.titleModel, (schemaPath) => {
     required(schemaPath.title, { message: 'Поле не може бути порожнім' });
     pattern(schemaPath.title, /^[a-zа-яіїєґ0-9-._\s]+$/i, {
       message: 'Поле може містити лише літери, 0-9, пробіли, крапки, "-" і "_"',
     });
+    hidden(schemaPath.title, () => !this.titleModel().newList);
   });
+  @ViewChild('titleInput') titleInput = inject(ElementRef);
 
   private preventDefault(e: Event) {
     e.preventDefault();
     e.stopPropagation();
   }
 
-  handleClickAddList() {
-    this.listNew = true;
-    this.titleForm.title().reset();
-    this.titleModel.set({ title: '' });
+  private setDefault() {
+    this.titleModel.set({ title: '', newList: false });
+    this.titleForm().reset();
+  }
+
+  handleClickAddList(e: PointerEvent) {
+    this.preventDefault(e);
+    this.titleModel.set({ ...this.titleModel(), newList: true });
+  }
+
+  handleClickCloseCreateList(e: MouseEvent) {
+    this.preventDefault(e);
+    this.setDefault();
   }
 
   handleClickAcceptCreateList(e: MouseEvent) {
@@ -37,11 +47,20 @@ export class ListCreate {
     if (this.titleForm.title().valid()) {
       this.handleCreateList.emit(this.titleForm.title().value());
     }
-    this.listNew = false;
+    this.setDefault();
   }
 
-  handleClickCloseCreateList(e: MouseEvent) {
+  handleBlurTitle(e: FocusEvent) {
     this.preventDefault(e);
-    this.listNew = false;
+    const eventTarget = e.relatedTarget as HTMLElement;
+    if (eventTarget === null) {
+      this.titleInput.nativeElement.focus();
+    } else if (eventTarget.className !== 'list-input') {
+      this.setDefault();
+    }
+  }
+
+  isDisabledTitle() {
+    return this.titleForm().invalid() || !(this.titleForm().dirty() || this.titleForm().touched());
   }
 }

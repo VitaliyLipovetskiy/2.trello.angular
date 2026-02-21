@@ -1,16 +1,15 @@
 <div class="list-add">
-  @if (listNew) {
-    <div class="list-new" [hidden]="!listNew">
+  @if (this.titleModel().newList) {
+    <div class="list-new">
       <input
+        #titleInput
+        class="list-input"
         trAutofocus
         [formField]="titleForm.title"
-        [class.title-invalid]="
-          titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
-        "
+        [class.title-invalid]="titleForm.title().invalid() && titleForm.title().dirty()"
+        (blur)="handleBlurTitle($event)"
       />
-      @if (
-        titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
-      ) {
+      @if (titleForm.title().invalid() && titleForm.title().dirty()) {
         @for (error of titleForm.title().errors(); track error) {
           <div class="error">{{ error.message }}</div>
         }
@@ -18,14 +17,8 @@
       <div class="list-btn">
         <button
           class="list-btn-accept"
-          [class.disabled]="
-            titleForm.title().invalid() &&
-            (titleForm.title().dirty() || titleForm.title().touched())
-          "
-          [disabled]="
-            titleForm.title().invalid() &&
-            (titleForm.title().dirty() || titleForm.title().touched())
-          "
+          [class.disabled]="isDisabledTitle()"
+          [disabled]="isDisabledTitle()"
           (mousedown)="handleClickAcceptCreateList($event)"
         >
           Додати список
@@ -36,6 +29,8 @@
       </div>
     </div>
   } @else {
-    <button class="list-add-btn" (click)="handleClickAddList()">+ Додайте ще один список</button>
+    <button class="list-add-btn" (click)="handleClickAddList($event)">
+      + Додайте ще один список
+    </button>
   }
 </div>

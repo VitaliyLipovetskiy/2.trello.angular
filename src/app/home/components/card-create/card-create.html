@@ -2,16 +2,14 @@
   @if (this.titleModel().newCard) {
     <div class="card-new">
       <textarea
-        class="card-new-input"
+        #titleInput
+        class="card-input"
         trAutofocus
         [formField]="titleForm.title"
-        [class.title-invalid]="
-          titleForm().invalid() && (titleForm().dirty() || titleForm().touched())
-        "
+        [class.title-invalid]="titleForm.title().invalid() && titleForm.title().dirty()"
+        (blur)="handleBlurTitle($event)"
       ></textarea>
-      @if (
-        titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())
-      ) {
+      @if (titleForm.title().invalid() && titleForm.title().dirty()) {
         @for (error of titleForm.title().errors(); track error) {
           <div class="error">{{ error.message }}</div>
         }
@@ -19,14 +17,8 @@
       <div class="card-btn">
         <button
           class="card-btn-accept"
-          [class.disabled]="
-            this.titleForm.title().invalid() &&
-            (titleForm.title().dirty() || titleForm.title().touched())
-          "
-          [disabled]="
-            this.titleForm.title().invalid() &&
-            (titleForm.title().dirty() || titleForm.title().touched())
-          "
+          [class.disabled]="isDisabledTitle()"
+          [disabled]="isDisabledTitle()"
           (mousedown)="handleClickAcceptCreateCard($event)"
         >
           Додати картку
