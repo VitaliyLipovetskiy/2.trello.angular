@@ -24,28 +24,11 @@
     color: $primary-color;
   }
 
-  @include btn__action('remove', 12px, 8px, 15px);
+  @include btn__action($top: 12px);
 
   .title-invalid {
     color: red;
   }
 
   @include error;
-}
-
-.btn-remove {
-  color: $secondary-color;
-  background-color: transparent;
-  position: absolute;
-  right: 3px;
-  font-size: 15px;
-  border-radius: 50%;
-  border: 1px solid transparent;
-}
-
-.btn-remove:hover {
-  cursor: pointer;
-  color: $primary-color;
-  background-color: $primary-background-element;
-  border: 1px solid $secondary-color;
 }

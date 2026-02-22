@@ -26,7 +26,8 @@
     font-size: 12px;
   }
 }
-@mixin btn__action($name, $top, $right, $size) {
+
+@mixin btn__action($name: 'remove', $top: 8px, $right: 8px, $size: 15px) {
   .btn__#{$name} {
     position: absolute;
     top: $top;

@@ -22,7 +22,7 @@
     padding: 1rem;
     border-radius: 15px;
 
-    @include btn__action('close', 8px, 8px, 25px);
+    @include btn__action($name: 'close', $size: 25px);
 
     h1 {
       text-align: center;

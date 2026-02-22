@@ -83,10 +83,10 @@
     background-color: $primary-background-element;
     border: none;
     border-radius: 10px;
-  }
 
-  &-btn:hover {
-    cursor: pointer;
-    background-color: $secondary-color;
+    &:hover {
+      cursor: pointer;
+      background-color: $secondary-color;
+    }
   }
 }

@@ -37,7 +37,7 @@
       border-radius: 15px;
       color: black;
 
-      @include btn__action('remove', 8px, 8px, 15px);
+      @include btn__action();
     }
   }
 
