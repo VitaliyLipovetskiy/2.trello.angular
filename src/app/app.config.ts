@@ -3,9 +3,9 @@ import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
-import { apiUrlInterceptor } from './helpers/api-url.interceptor';
+import { apiUrlInterceptor } from './core/interceptors/api-url.interceptor';
 import { provideToastr } from 'ngx-toastr';
-import { progressBarInterceptor } from '@app/helpers/progress-bar.interceptor';
+import { progressBarInterceptor } from '@app/core/interceptors/progress-bar.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [

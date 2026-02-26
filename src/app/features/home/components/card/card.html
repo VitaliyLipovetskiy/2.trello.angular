@@ -1,0 +1,17 @@
+<div class="card">
+  <button class="btn__remove" (click)="handleClickRemoveCard()">
+    <span></span>
+    <span></span>
+  </button>
+  <input
+    [formField]="titleForm.title"
+    [class.title-invalid]="titleForm.title().invalid() && titleForm.title().dirty()"
+    (click)="handleTitleClick()"
+    (blur)="handleTitleBlur($event)"
+  />
+  @if (titleForm.title().invalid() && (titleForm.title().dirty() || titleForm.title().touched())) {
+    @for (error of titleForm.title().errors(); track error) {
+      <div class="error">{{ error.message }}</div>
+    }
+  }
+</div>

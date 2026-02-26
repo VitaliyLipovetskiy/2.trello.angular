@@ -1,0 +1,32 @@
+<div class="list-add">
+  @if (this.titleModel().newElement) {
+    <div class="list-new">
+      <input
+        #titleInput
+        class="list-input"
+        trAutofocus
+        [formField]="titleForm.title"
+        [class.title-invalid]="isInvalidTitle()"
+        (blur)="handleBlurTitle($event)"
+      />
+      @if (isInvalidTitle()) {
+        @for (error of titleForm.title().errors(); track error) {
+          <div class="error">{{ error.message }}</div>
+        }
+      }
+      <div class="list-btn">
+        <button
+          class="list-btn-accept"
+          [class.disabled]="isDisabledButton"
+          [disabled]="isDisabledButton"
+          (mousedown)="handleClickAcceptCreateList()"
+        >
+          Додати список
+        </button>
+        <button class="list-btn-close" (mousedown)="handleClickCloseCreateList()">&times;</button>
+      </div>
+    </div>
+  } @else {
+    <button class="list-add-btn" (click)="handleClickAddList()">+ Додайте ще один список</button>
+  }
+</div>

@@ -1,0 +1,31 @@
+<form class="modal">
+  <div class="modal-content">
+    <button class="btn__close" (click)="handleClickClose($event)">
+      <span></span>
+      <span></span>
+    </button>
+    <h1>Створити дошку</h1>
+    <label for="board-title">Назва дошки*</label>
+    <div class="title">
+      <input
+        id="board-title"
+        trAutofocus
+        [formField]="titleForm.title"
+        [class.title-invalid]="isInvalidTitle"
+      />
+      @if (isInvalidTitle) {
+        @for (error of titleForm.title().errors(); track error) {
+          <div class="error">{{ error.message }}</div>
+        }
+      }
+    </div>
+    <button
+      class="btn-accept"
+      [class.disabled]="isDisabledCreateBtn"
+      [disabled]="isDisabledCreateBtn"
+      (click)="handleAcceptCreateBoard($event)"
+    >
+      Створити
+    </button>
+  </div>
+</form>

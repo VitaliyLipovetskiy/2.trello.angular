@@ -1,0 +1,27 @@
+<div class="list">
+  <button class="btn__remove" (click)="handleClickRemoveList()">
+    <span></span>
+    <span></span>
+  </button>
+  <div
+    class="title"
+    [class.title-readonly]="titleModel().titleReadonly"
+    [class.title-edit]="!titleModel().titleReadonly"
+  >
+    <input
+      [formField]="titleForm.title"
+      [class.title-invalid]="titleForm().invalid() && titleForm().dirty()"
+      (click)="handleTitleClick()"
+      (blur)="handleTitleBlur($event)"
+    />
+    @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
+      @for (error of titleForm.title().errors(); track error) {
+        <div class="error">{{ error.message }}</div>
+      }
+    }
+  </div>
+  @for (card of list?.cards; track card.id) {
+    <tr-card [cardId]="card.id" (handleRemoteCard)="handleRemoveCard($event)"></tr-card>
+  }
+  <tr-card-create (handleCreateCard)="handleCreateCard($event)"></tr-card-create>
+</div>
