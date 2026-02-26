@@ -48,9 +48,13 @@ export class List implements OnInit {
 
   handleRemoveCard(cardId: number) {
     const title = this.list?.cards?.find((card) => card.id === cardId)?.title;
+    if (!this.boardId) {
+      console.log('boardId is undefined');
+      return;
+    }
     if (confirm('Are you sure to delete ' + title)) {
       this.boardService
-        .removeCardById(this.boardId!, cardId)
+        .removeCardById(this.boardId, cardId)
         .pipe(
           tap(() => this.cdRef.markForCheck()),
           takeUntilDestroyed(this._destroy$),
@@ -74,10 +78,14 @@ export class List implements OnInit {
       this.titleForm().reset();
       return;
     }
+    if (!this.boardId) {
+      console.log('boardId is undefined');
+      return;
+    }
     this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
     if (value.trim() !== this.list?.title.trim()) {
       this.boardService
-        .updateListById(this.boardId!, this.listId(), { title: value.trim() })
+        .updateListById(this.boardId, this.listId(), { title: value.trim() })
         .pipe(
           tap(() => {
             this.titleModel.set({ ...this.titleModel(), title: value.trim() });
@@ -90,13 +98,21 @@ export class List implements OnInit {
   }
 
   handleCreateCard(title: string) {
+    if (!this.boardId) {
+      console.log('boardId is undefined');
+      return;
+    }
+    if (!this.list) {
+      console.log('list is undefined');
+      return;
+    }
     const newCard: ICardCreate = {
       title,
       list_id: this.listId(),
-      position: this.list!.cards?.map((c) => c.position).reduce((a, b) => Math.max(a, b), 0) + 1,
+      position: this.list.cards?.map((c) => c.position).reduce((a, b) => Math.max(a, b), 0) + 1,
     };
     this.boardService
-      .createCard(this.boardId!, newCard)
+      .createCard(this.boardId, newCard)
       .pipe(
         tap(() => this.cdRef.markForCheck()),
         takeUntilDestroyed(this._destroy$),

@@ -67,12 +67,20 @@ export class Card implements OnInit {
     }
     this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
     if (value.trim() !== this.title?.trim()) {
+      if (!this.listId) {
+        console.log('list id is undefined');
+        return;
+      }
       const cardData: ICardUpdate = {
         title: value.trim(),
-        list_id: this.listId!,
+        list_id: this.listId,
       };
+      if (!this.boardId) {
+        console.log('boardId is undefined');
+        return;
+      }
       this.boardService
-        .updateCardById(this.boardId!, this.cardId(), cardData)
+        .updateCardById(this.boardId, this.cardId(), cardData)
         .pipe(
           tap(() => {
             this.titleModel.set({ ...this.titleModel(), title: value.trim() });

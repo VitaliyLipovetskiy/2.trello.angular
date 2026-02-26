@@ -10,7 +10,7 @@ import {
   IListCreate,
   IListUpdate,
   IResult,
-  IResultCreated,
+  IResultCreated
 } from '@app/shared/interfaces';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
@@ -23,12 +23,8 @@ export class BoardService {
   private readonly toastr = inject(ToastrService);
   private readonly _boards = signal<IBoard[]>([]);
   private readonly _board = signal<IBoard | null>(null);
-  // private readonly _list = signal<IList | null>(null);
-  // private readonly _card = signal<ICard | null>(null);
   readonly boards = this._boards.asReadonly();
   readonly board = this._board.asReadonly();
-  // readonly list = this._list.asReadonly();
-  // readonly card = this._card.asReadonly();
 
   getBoards(): Observable<IBoard[]> {
     return this.http.get<{ boards: IBoard[] }>('board').pipe(
@@ -77,7 +73,9 @@ export class BoardService {
     return this.http.put<IResult>(`board/${id}`, data).pipe(
       tap(({ result }) => {
         if (result === 'Updated') {
-          const board: IBoard = { ...this.board()!, title: data.title };
+          const _board = this.board();
+          if (!_board) return;
+          const board: IBoard = { ..._board, title: data.title };
           if (data.custom) {
             board.custom = data.custom;
           }
@@ -117,8 +115,10 @@ export class BoardService {
     return this.http.post<IResultCreated>(`board/${boardId}/list`, data).pipe(
       tap(({ result, id }) => {
         if (result === 'Created') {
+          const _board = this.board();
+          if (!_board) return;
           const list: IList = { id, title: data.title, position: data.position, cards: [] };
-          const board: IBoard = { ...this.board()! };
+          const board: IBoard = { ..._board };
           board.lists?.push(list);
           this._board.set(board);
           this.toastr.success('List created successfully!', 'Success!');
@@ -138,10 +138,12 @@ export class BoardService {
     return this.http.put<IResult>(`board/${boardId}/list/${listId}`, data).pipe(
       tap(({ result }) => {
         if (result === 'Updated') {
+          const _board = this.board();
+          if (!_board) return;
           const lists = this.board()?.lists?.map((list) =>
             list.id === listId ? { ...list, title: data.title } : list,
           ) as IList[];
-          this._board.set({ ...this.board()!, lists });
+          this._board.set({ ..._board, lists });
           this.toastr.success('List updated successfully!', 'Success!');
         } else {
           this.toastr.error('List not updated!', 'Error!');
