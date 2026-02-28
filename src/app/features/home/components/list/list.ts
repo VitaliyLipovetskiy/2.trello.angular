@@ -3,6 +3,7 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
+  effect,
   inject,
   input,
   OnInit,
@@ -17,10 +18,11 @@ import { BoardService } from '@app/features/home/services/board.service';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getTitleForm } from '@app/shared/helper/form-helper';
+import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'tr-list',
-  imports: [Card, FormsModule, CardCreate, FormField],
+  imports: [Card, FormsModule, CardCreate, FormField, RouterLink, RouterOutlet],
   templateUrl: './list.html',
   styleUrl: './list.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,18 +31,25 @@ export class List implements OnInit {
   private readonly _destroy$ = inject(DestroyRef);
   private readonly boardService = inject(BoardService);
   private readonly cdRef = inject(ChangeDetectorRef);
-  listId = input.required<number>();
+  private boardId?: number;
+  readonly listId = input.required<number>();
+  readonly handleRemoteList = output<number>();
+  readonly titleModel = signal({ title: '', titleReadonly: true });
+  readonly titleForm = getTitleForm(this.titleModel);
   list?: IList;
-  boardId?: number;
-  handleRemoteList = output<number>();
-  titleModel = signal({ title: '', titleReadonly: true });
-  titleForm = getTitleForm(this.titleModel);
 
   ngOnInit() {
     this.boardId = this.boardService.board()?.id;
     this.list = this.boardService.board()?.lists?.find((list) => list.id === this.listId());
     this.titleModel.set({ ...this.titleModel(), title: this.list?.title || '' });
   }
+
+  private readonly _ = effect(() => {
+    if (this.boardService.listUpdatedId() === this.listId()) {
+      this.cdRef.markForCheck();
+      this.boardService.clearListUpdatedId();
+    }
+  });
 
   handleClickRemoveList() {
     this.handleRemoteList.emit(this.listId());

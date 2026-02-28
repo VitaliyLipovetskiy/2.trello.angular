@@ -20,10 +20,10 @@ import { getTitleForm } from '@app/shared/helper/form-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardCreate {
-  handleCreateCard = output<string>();
-  titleModel = signal({ title: '', newElement: false });
-  titleForm = getTitleForm(this.titleModel);
-  @ViewChild('titleInput') titleInput = inject(ElementRef);
+  readonly handleCreateCard = output<string>();
+  readonly titleModel = signal({ title: '', newElement: false });
+  readonly titleForm = getTitleForm(this.titleModel);
+  @ViewChild('titleInput') private readonly titleInput = inject(ElementRef);
 
   private setDefault() {
     this.titleModel.set({ ...this.titleModel(), title: '', newElement: false });
@@ -58,7 +58,7 @@ export class CardCreate {
     return this.titleForm().invalid() || !(this.titleForm().dirty() || this.titleForm().touched());
   }
 
-  isInvalidTitle() {
+  get isInvalidTitle() {
     return this.titleForm.title().invalid() && this.titleForm.title().dirty();
   }
 }

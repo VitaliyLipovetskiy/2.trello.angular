@@ -29,11 +29,11 @@ export class Board implements OnInit {
   private readonly _destroy$ = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly cdRef = inject(ChangeDetectorRef);
-  boardId = signal<number>(0);
   private readonly boardService = inject(BoardService);
-  board = this.boardService.board();
-  titleModel = signal({ title: '', backgroundColor: '', titleReadonly: true });
-  titleForm = getTitleForm(this.titleModel);
+  private readonly boardId = signal<number>(0);
+  readonly board = this.boardService.board();
+  readonly titleModel = signal({ title: '', backgroundColor: '', titleReadonly: true });
+  readonly titleForm = getTitleForm(this.titleModel);
 
   ngOnInit() {
     this.initBoard();
@@ -42,17 +42,20 @@ export class Board implements OnInit {
 
   private initBoard(): void {
     this.activatedRoute.params.subscribe((params) => {
-      this.boardId.set(params['id']);
+      this.boardId.set(params['boardId']);
     });
     this.activatedRoute.data
       .pipe(
         tap(({ board }) => {
-          this.titleModel.set({
-            ...this.titleModel(),
-            title: board.title,
-            backgroundColor: board.custom?.background,
-          });
+          if (board) {
+            this.titleModel.set({
+              ...this.titleModel(),
+              title: board.title,
+              backgroundColor: board.custom?.background,
+            });
+          }
         }),
+        takeUntilDestroyed(this._destroy$),
       )
       .subscribe();
   }

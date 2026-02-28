@@ -5,7 +5,7 @@ import { BoardService } from '@app/features/home/services/board.service';
 
 export const BoardResolver: ResolveFn<IBoard | Error> = (route: ActivatedRouteSnapshot) => {
   const boardService = inject(BoardService);
-  const id = route.paramMap.get('id');
+  const id = route.paramMap.get('boardId');
   if (!id || !/^\d+$/.test(id)) {
     console.log('Bad id');
     return new Error('Bad id');

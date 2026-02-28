@@ -10,6 +10,6 @@ import { AsyncPipe } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProgressBar {
-  protected readonly loaderService = inject(LoaderService);
-  loading$ = this.loaderService.isLoading;
+  private readonly loaderService = inject(LoaderService);
+  readonly loading$ = this.loaderService.isLoading;
 }

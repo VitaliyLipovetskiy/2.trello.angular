@@ -1,0 +1,54 @@
+@if (cardModal()) {
+  <form
+    class="modals_wrapper"
+    trCloseByEscape
+    (escapeAction)="handleModalClose()"
+    (click)="handleClickOutside($event)"
+    (keydown.esc)="handleModalClose()"
+  >
+    <div class="modal">
+      <header class="modal_header">
+        <button class="btn__close" (click)="handleModalClose()">
+          <span></span>
+          <span></span>
+        </button>
+      </header>
+      <div class="modal_body">
+        <div class="form">
+          <div class="title">
+            <input
+              id="title"
+              type="text"
+              [formField]="cardForm.title"
+              [class.title-invalid]="isInvalidTitle"
+              (blur)="handleInputOnBlur()"
+            />
+            @if (isInvalidTitle) {
+              @for (error of cardForm.title().errors(); track error) {
+                <div class="error">{{ error.message }}</div>
+              }
+            }
+            <label for="title"
+            >в колонці
+              <ins>{{ list()?.title }}</ins>
+            </label>
+          </div>
+          <div class="description">
+            <textarea
+              placeholder="Card description"
+              rows="{3}"
+              (blur)="handleInputOnBlur()"
+              [formField]="cardForm.description"
+            ></textarea>
+          </div>
+        </div>
+        <div class="modal_actions">
+          <span>ДІЇ</span>
+          <button>Копіювати</button>
+          <button>Перемістити</button>
+          <button>Заархівувати</button>
+        </div>
+      </div>
+    </div>
+  </form>
+}

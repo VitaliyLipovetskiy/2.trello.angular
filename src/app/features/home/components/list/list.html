@@ -21,7 +21,10 @@
     }
   </div>
   @for (card of list?.cards; track card.id) {
-    <tr-card [cardId]="card.id" (handleRemoteCard)="handleRemoveCard($event)"></tr-card>
+    <a [routerLink]="['card', card.id]">
+      <tr-card [cardId]="card.id" (handleRemoteCard)="handleRemoveCard($event)"></tr-card>
+    </a>
   }
   <tr-card-create (handleCreateCard)="handleCreateCard($event)"></tr-card-create>
 </div>
+<router-outlet/>

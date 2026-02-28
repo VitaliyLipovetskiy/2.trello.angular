@@ -1,5 +1,12 @@
-<form class="modal">
-  <div class="modal-content">
+<form
+  class="modals_wrapper"
+  trCloseByEscape
+  (escapeAction)="handleClose.emit()"
+  (click)="handleClickOutside($event)"
+  (keydown.esc)="handleClose.emit()"
+  (submit)="handleAcceptCreateBoard($event)"
+>
+  <div class="modal">
     <button class="btn__close" (click)="handleClickClose($event)">
       <span></span>
       <span></span>
@@ -20,10 +27,10 @@
       }
     </div>
     <button
+      type="submit"
       class="btn-accept"
       [class.disabled]="isDisabledCreateBtn"
       [disabled]="isDisabledCreateBtn"
-      (click)="handleAcceptCreateBoard($event)"
     >
       Створити
     </button>

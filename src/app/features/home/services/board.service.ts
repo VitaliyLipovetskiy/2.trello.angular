@@ -10,7 +10,7 @@ import {
   IListCreate,
   IListUpdate,
   IResult,
-  IResultCreated
+  IResultCreated,
 } from '@app/shared/interfaces';
 import { ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
@@ -22,9 +22,19 @@ export class BoardService {
   private readonly http = inject(HttpClient);
   private readonly toastr = inject(ToastrService);
   private readonly _boards = signal<IBoard[]>([]);
-  private readonly _board = signal<IBoard | null>(null);
-  readonly boards = this._boards.asReadonly();
+  private readonly _board = signal<IBoard | undefined>(undefined);
+  private readonly _list = signal<IList | undefined>(undefined);
+  private readonly _card = signal<ICard | undefined>(undefined);
+  private readonly _cardUpdatedId = signal<number>(0);
+  private readonly _listUpdatedId = signal<number>(0);
+  private readonly _cardModal = signal(false);
+  readonly boards = this._boards;
   readonly board = this._board.asReadonly();
+  readonly list = this._list.asReadonly();
+  readonly card = this._card.asReadonly();
+  readonly cardUpdatedId = this._cardUpdatedId.asReadonly();
+  readonly listUpdatedId = this._listUpdatedId.asReadonly();
+  readonly cardModal = this._cardModal.asReadonly();
 
   getBoards(): Observable<IBoard[]> {
     return this.http.get<{ boards: IBoard[] }>('board').pipe(
@@ -143,6 +153,8 @@ export class BoardService {
           const lists = this.board()?.lists?.map((list) =>
             list.id === listId ? { ...list, title: data.title } : list,
           ) as IList[];
+          this._list.set(lists.find((list) => list.id === listId));
+          this._listUpdatedId.set(listId);
           this._board.set({ ..._board, lists });
           this.toastr.success('List updated successfully!', 'Success!');
         } else {
@@ -168,6 +180,24 @@ export class BoardService {
         } else {
           this.toastr.error('List not deleted!', 'Error!');
         }
+      }),
+      catchError((error) => {
+        console.log(error);
+        this.toastr.error(error.message, 'Error!');
+        return of();
+      }),
+    );
+  }
+
+  getCardById(boardId: number, cardId: number) {
+    return this.http.get<IBoard>(`board/${boardId}`).pipe(
+      map((board) => {
+        this._board.set({ ...board, id: boardId });
+        const list = board.lists?.find((l) => l.cards?.some((c) => c.id === cardId));
+        this._list.set(list);
+        const card = list?.cards.find((c) => c.id === cardId);
+        this._card.set(card);
+        return card;
       }),
       catchError((error) => {
         console.log(error);
@@ -210,6 +240,7 @@ export class BoardService {
               if (card.id !== cardId) return;
               card.title = data.title.trim();
               card.description = data.description?.trim();
+              this._cardUpdatedId.set(cardId);
             });
           });
           this.toastr.success('Card updated successfully!', 'Success!');
@@ -244,5 +275,22 @@ export class BoardService {
         return of();
       }),
     );
+  }
+
+  setCard(card: ICard | undefined, list: IList | undefined) {
+    this._card.set(card);
+    this._list.set(list);
+  }
+
+  clearCardUpdatedId() {
+    this._cardUpdatedId.set(0);
+  }
+
+  clearListUpdatedId() {
+    this._listUpdatedId.set(0);
+  }
+
+  setCardModal(cardModal: boolean) {
+    this._cardModal.set(cardModal);
   }
 }

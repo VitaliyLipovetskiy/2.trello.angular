@@ -12,7 +12,7 @@
   justify-content: center;
 
   &:hover {
-    cursor: pointer;
+    cursor: grab;
     border: 1px solid $primary-color;
   }
 
@@ -25,10 +25,4 @@
   }
 
   @include btn__action($top: 12px);
-
-  .title-invalid {
-    color: red;
-  }
-
-  @include error;
 }

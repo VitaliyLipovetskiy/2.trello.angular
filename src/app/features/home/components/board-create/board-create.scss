@@ -1,6 +1,6 @@
 @use 'mixins' as *;
 
-.modal {
+.modals_wrapper {
   position: fixed;
   top: 0;
   left: 0;
@@ -9,7 +9,7 @@
   background-color: rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(1px);
 
-  .modal-content {
+  .modal {
     display: flex;
     flex-direction: column;
     max-width: 450px;

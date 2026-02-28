@@ -16,7 +16,7 @@ export class Home implements OnInit {
   private readonly _destroy$ = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly boardService = inject(BoardService);
-  boards = this.boardService.boards;
+  readonly boards = this.boardService.boards;
   boardModal = false;
 
   ngOnInit() {
@@ -31,14 +31,6 @@ export class Home implements OnInit {
         takeUntilDestroyed(this._destroy$),
       )
       .subscribe();
-  }
-
-  protected handleClickAddBoard() {
-    this.boardModal = true;
-  }
-
-  handleModalClickClose() {
-    this.boardModal = false;
   }
 
   handleClickRemoveBoard(e: MouseEvent, boardId: number) {
