@@ -11,6 +11,12 @@ export interface ICard {
   created_at?: number;
 }
 
+export interface ICardSlot {
+  position: number;
+  card: ICard | undefined;
+  view: boolean;
+}
+
 export interface ICardCreate {
   title: string;
   list_id: number;
@@ -25,4 +31,10 @@ export interface ICardUpdate {
   title: string;
   list_id: number;
   description?: string;
+}
+
+export interface ICardsUpdate {
+  id: number;
+  position: number;
+  list_id: number;
 }

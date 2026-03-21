@@ -10,7 +10,7 @@ import { BoardService } from '@app/features/home/services/board.service';
 import { getCardModalForm } from '@app/shared/helper/form-helper';
 import { FormField } from '@angular/forms/signals';
 import { FormsModule } from '@angular/forms';
-import { ICard, ICardUpdate } from '@app/shared/interfaces';
+import { ICardSlot, ICardUpdate } from '@app/shared/interfaces';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EscapeListenerDirective } from '@app/shared/directives/escape-listener.directive';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -40,10 +40,10 @@ export class CardModal implements OnInit {
     this.initCard();
   }
 
-  private setCardModel(card: ICard | undefined) {
+  private setCardModel(cardSlot: ICardSlot | undefined) {
     this.cardModel.set({
-      title: card?.title || '',
-      description: card?.description || '',
+      title: cardSlot?.card?.title || '',
+      description: cardSlot?.card?.description || '',
     });
   }
 
@@ -78,8 +78,8 @@ export class CardModal implements OnInit {
       return;
     }
     if (
-      this.cardModel().title.trim() !== this.card()?.title?.trim() ||
-      this.cardModel().description.trim() !== this.card()?.description?.trim()
+      this.cardModel().title.trim() !== this.card()?.card?.title?.trim() ||
+      this.cardModel().description.trim() !== this.card()?.card?.description?.trim()
     ) {
       if (!this.card()) {
         console.log('card is undefined');
@@ -99,7 +99,7 @@ export class CardModal implements OnInit {
         return;
       }
       this.boardService
-        .updateCardById(this.boardId, this.card()!.id, cardData)
+        .updateCardById(this.boardId, this.card()!.card!.id, cardData)
         .pipe(takeUntilDestroyed(this._destroy$))
         .subscribe();
     }

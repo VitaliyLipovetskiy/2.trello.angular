@@ -45,10 +45,10 @@
       </div>
     </div>
   </header>
-  <div class="container">
+  <ol class="container">
     @for (list of board?.lists; track list.id) {
       <tr-list [listId]="list.id" (handleRemoteList)="handleRemoteList($event)"></tr-list>
     }
     <tr-list-create (handleCreateList)="handleCreateList($event)"></tr-list-create>
-  </div>
+  </ol>
 </div>

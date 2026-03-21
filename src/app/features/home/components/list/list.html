@@ -1,30 +1,59 @@
-<div class="list">
-  <button class="btn__remove" (click)="handleClickRemoveList()">
-    <span></span>
-    <span></span>
-  </button>
-  <div
-    class="title"
-    [class.title-readonly]="titleModel().titleReadonly"
-    [class.title-edit]="!titleModel().titleReadonly"
-  >
-    <input
-      [formField]="titleForm.title"
-      [class.title-invalid]="titleForm().invalid() && titleForm().dirty()"
-      (click)="handleTitleClick()"
-      (blur)="handleTitleBlur($event)"
-    />
-    @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
-      @for (error of titleForm.title().errors(); track error) {
-        <div class="error">{{ error.message }}</div>
+<div
+  [id]="listId()"
+  class="list-wrapper"
+  (dragover)="handleDragOver($event)"
+  (dragleave)="handleDragLeave($event)"
+  (drop)="handleDrop($event)"
+>
+  <div class="list">
+    <button class="btn__remove" (click)="handleClickRemoveList()">
+      <span></span>
+      <span></span>
+    </button>
+    <div
+      class="title"
+      [class.title-readonly]="titleModel().titleReadonly"
+      [class.title-edit]="!titleModel().titleReadonly"
+    >
+      <input
+        [formField]="titleForm.title"
+        [class.title-invalid]="titleForm().invalid() && titleForm().dirty()"
+        (click)="handleTitleClick()"
+        (blur)="handleTitleBlur($event)"
+      />
+      @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
+        @for (error of titleForm.title().errors(); track error) {
+          <div class="error">{{ error.message }}</div>
+        }
       }
-    }
+    </div>
+    <ol class="container">
+      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.card?.id) {
+        @if (cardSlot.card) {
+          <li
+            #cardElement
+            class="card-wrapper"
+            draggable="true"
+            data-type="card"
+            [attr.data-id]="cardSlot.card.id"
+            [attr.data-position]="cardSlot.position"
+            [routerLink]="['card', cardSlot.card.id]"
+            (dragstart)="handleDragStart($event)"
+            (dragend)="handleDragEnd($event)"
+          >
+            <tr-card
+              [cardId]="cardSlot.card.id"
+              (handleRemoteCard)="handleRemoveCard($event)"
+            ></tr-card>
+          </li>
+        } @else if (cardSlot.view) {
+          <li class="card-wrapper" data-type="placeholder" [attr.data-position]="cardSlot.position">
+            <tr-card></tr-card>
+          </li>
+        }
+      }
+    </ol>
+    <tr-card-create (handleCreateCard)="handleCreateCard($event)"></tr-card-create>
   </div>
-  @for (card of list?.cards; track card.id) {
-    <a [routerLink]="['card', card.id]">
-      <tr-card [cardId]="card.id" (handleRemoteCard)="handleRemoveCard($event)"></tr-card>
-    </a>
-  }
-  <tr-card-create (handleCreateCard)="handleCreateCard($event)"></tr-card-create>
 </div>
 <router-outlet/>

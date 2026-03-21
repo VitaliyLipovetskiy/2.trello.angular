@@ -1,7 +1,9 @@
 <div class="card">
-  <button class="btn__remove" (click)="handleClickRemoveCard($event)">
-    <span></span>
-    <span></span>
-  </button>
-  <input [readonly]="true" [value]="card?.title || ''" (click)="handleTitleClick()"/>
+  <!--  @if (cardSlot()?.card) {-->
+  <!--    <button class="btn__remove" (click)="handleClickRemoveCard($event)">-->
+  <!--      <span></span>-->
+  <!--      <span></span>-->
+  <!--    </button>-->
+  <!--  }-->
+  <input [readonly]="true" [value]="cardTitle() || ''"/>
 </div>

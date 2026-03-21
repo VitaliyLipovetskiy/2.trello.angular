@@ -1,10 +1,17 @@
-import { ICard } from './card.interface';
+import { ICard, ICardSlot } from './card.interface';
 
 export interface IList {
   id: number;
   title: string;
   position: number;
   cards: ICard[];
+}
+
+export interface IListSlot {
+  id: number;
+  title: string;
+  position: number;
+  cardSlots: ICardSlot[];
 }
 
 export interface IListCreate {
