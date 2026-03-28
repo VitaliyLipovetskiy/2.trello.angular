@@ -61,24 +61,6 @@ export class List implements OnInit {
     this.handleRemoteList.emit(this.listId());
   }
 
-  handleRemoveCard(cardId: number) {
-    const title = this.listSlot()?.cardSlots?.find((cardSlot) => cardSlot.card?.id === cardId)?.card
-      ?.title;
-    if (!this.boardId) {
-      console.log('boardId is undefined');
-      return;
-    }
-    if (confirm('Are you sure to delete ' + title)) {
-      this.boardService
-        .removeCardById(this.boardId, cardId)
-        .pipe(
-          tap(() => this.cdRef.markForCheck()),
-          takeUntilDestroyed(this._destroy$),
-        )
-        .subscribe();
-    }
-  }
-
   handleTitleClick() {
     this.titleModel.set({ ...this.titleModel(), titleReadonly: false });
   }
@@ -306,7 +288,7 @@ export class List implements OnInit {
           .filter((slot) => !!slot.card && slot.card.id !== +draggedCardId)
           .map((slot, index) => ({
             card: slot.card,
-            position: index + 1, // Перераховуємо позиції 1, 2, 3...
+            position: index + 1,
           }))
           .filter((slot) => slot.position !== slot.card!.position)
           .map((slot) => ({

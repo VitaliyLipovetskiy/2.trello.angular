@@ -17,11 +17,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EscapeListenerDirective } from '@app/shared/directives/escape-listener.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs';
-import { LinkifyPipe } from '@app/shared/pipes/linkify.pipe';
+import { MarkdownPipe } from '@app/shared/pipes/markdown.pipe';
 
 @Component({
   selector: 'tr-card-modal',
-  imports: [FormField, FormsModule, EscapeListenerDirective, LinkifyPipe],
+  imports: [FormField, FormsModule, EscapeListenerDirective, MarkdownPipe],
   templateUrl: './card-modal.html',
   styleUrl: './card-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -76,6 +76,13 @@ export class CardModal implements OnInit {
     this.boardService.setCardModal(false);
   }
 
+  handleEscape(event: Event) {
+    event.stopPropagation();
+    this.setCardModel(this.card());
+    this.isEditingDescription.set(false);
+    (event.target as HTMLElement).blur();
+  }
+
   handleInputOnBlur() {
     this.isEditingDescription.set(false);
     if (this.cardForm.title().invalid()) {
@@ -115,6 +122,28 @@ export class CardModal implements OnInit {
     const target = e.target as HTMLElement;
     if (target.className.includes('modals_wrapper')) {
       this.handleModalClose();
+    }
+  }
+
+  handleDeleteCard() {
+    const title = this.card()?.card?.title;
+    if (!this.boardId) {
+      console.log('boardId is undefined');
+      return;
+    }
+    const listId = this.list()!.id;
+    if (!listId) {
+      console.log('list is undefined');
+      return;
+    }
+    if (confirm(`Are you sure to delete ${title}`)) {
+      this.boardService
+        .removeCardById(this.boardId, listId, this.cardId())
+        .pipe(
+          tap(() => this.handleModalClose()),
+          takeUntilDestroyed(this._destroy$),
+        )
+        .subscribe();
     }
   }
 

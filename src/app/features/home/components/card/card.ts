@@ -6,7 +6,6 @@ import {
   effect,
   inject,
   input,
-  output,
 } from '@angular/core';
 import { BoardService } from '@app/features/home/services/board.service';
 
@@ -30,7 +29,6 @@ export class Card {
         )
         ?.cardSlots?.find((cardSlot) => cardSlot.card?.id === this.cardId())?.card?.title,
   );
-  readonly handleRemoteCard = output<number>();
 
   private readonly _ = effect(() => {
     if (this.boardService.cardUpdatedId() === this.cardId()) {
@@ -38,16 +36,4 @@ export class Card {
       this.boardService.clearCardUpdatedId();
     }
   });
-
-  // handleClickRemoveCard(e: MouseEvent) {
-  //   e.preventDefault();
-  //   e.stopPropagation();
-  //   this.handleRemoteCard.emit(this.cardId());
-  // }
-
-  // handleTitleClick() {
-  //   if (this.cardSlot && this.listSlot) {
-  //     this.boardService.setCard(this.cardSlot(), this.listSlot());
-  //   }
-  // }
 }

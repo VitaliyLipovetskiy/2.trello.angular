@@ -41,10 +41,7 @@
             (dragstart)="handleDragStart($event)"
             (dragend)="handleDragEnd($event)"
           >
-            <tr-card
-              [cardId]="cardSlot.card.id"
-              (handleRemoteCard)="handleRemoveCard($event)"
-            ></tr-card>
+            <tr-card [cardId]="cardSlot.card.id"></tr-card>
           </li>
         } @else if (cardSlot.view) {
           <li class="card-wrapper" data-type="placeholder" [attr.data-position]="cardSlot.position">

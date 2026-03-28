@@ -22,16 +22,16 @@
               [formField]="cardForm.title"
               [class.title-invalid]="isInvalidTitle"
               (blur)="handleInputOnBlur()"
+              (keydown.escape)="handleEscape($event)"
             />
             @if (isInvalidTitle) {
               @for (error of cardForm.title().errors(); track error) {
                 <div class="error">{{ error.message }}</div>
               }
             }
-            <label for="title"
-            >в колонці
+            <p>в колонці
               <ins>{{ list()?.title }}</ins>
-            </label>
+            </p>
           </div>
           <div class="description">
             @if (isEditingDescription() || !cardForm.description().value()) {
@@ -39,23 +39,25 @@
                 #descriptionTextarea
                 placeholder="Card description"
                 rows="3"
-                (blur)="handleInputOnBlur()"
                 [formField]="cardForm.description"
+                (blur)="handleInputOnBlur()"
+                (keydown.escape)="handleEscape($event)"
               ></textarea>
             } @else {
               <div
                 class="description_viewer"
                 (click)="toggleEditDescription()"
-                [innerHTML]="cardForm.description().value() | linkify"
+                [innerHTML]="cardForm.description().value() | markdown"
               ></div>
             }
           </div>
         </div>
         <div class="modal_actions">
           <span>ДІЇ</span>
-          <button>Копіювати</button>
-          <button>Перемістити</button>
-          <button>Заархівувати</button>
+          <button disabled>Копіювати</button>
+          <button disabled>Перемістити</button>
+          <button disabled>Заархівувати</button>
+          <button (click)="handleDeleteCard()">Видалити</button>
         </div>
       </div>
     </div>

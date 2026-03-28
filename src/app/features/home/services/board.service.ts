@@ -199,7 +199,6 @@ export class BoardService {
   }
 
   getCardById(boardId: number, cardId: number) {
-    console.log('getCardById', cardId);
     return this.http.get<IBoard>(`board/${boardId}`).pipe(
       map((board) => {
         const listSlots = board.lists?.map((list) => this.convertListToSlot(list)) || [];
@@ -276,8 +275,6 @@ export class BoardService {
           this.toastr.error('Card not updated!', 'Error!');
           return;
         }
-
-        // Refresh the whole board to ensure state is consistent with server
         this.getBoardById(boardId).subscribe();
         this.toastr.success('Cards updated successfully!', 'Success!');
       }),
@@ -289,16 +286,17 @@ export class BoardService {
     );
   }
 
-  removeCardById(boardId: number, cardId: number): Observable<IResult> {
+  removeCardById(boardId: number, listId: number, cardId: number): Observable<IResult> {
     return this.http.delete<IResult>(`board/${boardId}/card/${cardId}`).pipe(
       tap(({ result }) => {
         if (result === 'Deleted') {
           this.board()?.lists?.forEach((listSlot) => {
             if (!listSlot.cardSlots.some((cardSlot) => cardSlot.card?.id)) return;
             listSlot.cardSlots = listSlot.cardSlots.filter(
-              (cardSlot) => cardSlot.card?.id !== cardId,
+              (cardSlot) => cardSlot.card?.id !== +cardId,
             );
           });
+          this._listUpdatedId.set(listId);
           this.toastr.success('Card removed successfully!', 'Success!');
         } else {
           this.toastr.error('Card not deleted!', 'Error!');

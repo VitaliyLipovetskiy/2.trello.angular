@@ -74,32 +74,15 @@
         display: flex;
         flex-direction: column;
         margin-top: 10px;
-
-        &_header {
-          display: flex;
-          position: relative;
-        }
-
-        & label {
-          padding-left: 8px;
-          border: none;
-          color: $primary-background-element;
-        }
+        border: 1px solid $secondary-color;
+        border-radius: 5px;
 
         & textarea {
           padding: 8px;
           border-radius: 5px;
           resize: none;
           border: none;
-          width: 100%;
           min-height: 80px;
-          background: #f4f5f7;
-
-          &:focus {
-            background: white;
-            box-shadow: inset 0 0 0 2px #0079bf;
-            outline: none;
-          }
         }
 
         & .description_viewer {
@@ -108,19 +91,47 @@
           cursor: pointer;
           white-space: pre-wrap;
           word-break: break-word;
+          border: 1px solid $secondary-color;
+          border-radius: 5px;
 
-          &:hover {
-            background-color: rgba(9, 30, 66, 0.08);
-            border-radius: 3px;
+          strong {
+            font-weight: 700;
           }
 
-          .linkified {
-            color: #0052cc;
-            text-decoration: underline;
+          em {
+            font-style: italic;
+          }
 
-            &:hover {
-              color: #003380;
-            }
+          del {
+            text-decoration: line-through;
+          }
+
+          h1, h2, h3 {
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            line-height: 1.2;
+          }
+
+          h1 {
+            font-size: 1.4em;
+          }
+
+          h2 {
+            font-size: 1.2em;
+          }
+
+          h3 {
+            font-size: 1.1em;
+          }
+
+          code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: $secondary-background;
+            border-radius: 6px;
+            font-family: monospace;
           }
         }
       }
