@@ -142,82 +142,83 @@ export class List implements OnInit {
     const cardId = target.dataset['id'];
     this.boardService.setCardDragged(cardId || undefined, this.listId());
 
-    if (e.dataTransfer) {
-      e.dataTransfer.setData('card_id', cardId || '');
-      e.dataTransfer.setData('list_id', this.listId().toString());
-      e.dataTransfer.effectAllowed = 'move';
+    if (!e.dataTransfer) {
+      return;
+    }
+    e.dataTransfer.setData('card_id', cardId || '');
+    e.dataTransfer.setData('list_id', this.listId().toString());
+    e.dataTransfer.effectAllowed = 'move';
 
-      const rect = target.getBoundingClientRect();
+    const rect = target.getBoundingClientRect();
 
-      const cardSlot = this.listSlot()?.cardSlots?.find((s) => s.card?.id === +(cardId || 0));
-      const text = cardSlot?.card?.title || '';
+    const cardSlot = this.listSlot()?.cardSlots?.find((s) => s.card?.id === +(cardId || 0));
+    const text = cardSlot?.card?.title || '';
 
-      const padding = 40;
-      const canvasWidth = rect.width + padding * 2;
-      const canvasHeight = rect.height + padding * 2;
+    const padding = 40;
+    const canvasWidth = rect.width + padding * 2;
+    const canvasHeight = rect.height + padding * 2;
 
-      const canvas = document.createElement('canvas');
-      canvas.width = canvasWidth;
-      canvas.height = canvasHeight;
-      const ctx = canvas.getContext('2d');
+    const canvas = document.createElement('canvas');
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    const ctx = canvas.getContext('2d');
 
-      if (ctx) {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-        ctx.save();
-        ctx.translate(canvasWidth / 2, canvasHeight / 2);
-        ctx.rotate((3 * Math.PI) / 180);
-        ctx.scale(1.02, 1.02);
+    if (ctx) {
+      ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      ctx.save();
+      ctx.translate(canvasWidth / 2, canvasHeight / 2);
+      ctx.rotate((3 * Math.PI) / 180);
+      ctx.scale(1.02, 1.02);
 
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-        ctx.shadowBlur = 12;
-        ctx.shadowOffsetX = 2;
-        ctx.shadowOffsetY = 6;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+      ctx.shadowBlur = 12;
+      ctx.shadowOffsetX = 2;
+      ctx.shadowOffsetY = 6;
 
-        ctx.fillStyle = '#3b3b3b';
-        const x = -rect.width / 2;
-        const y = -rect.height / 2;
-        const w = rect.width;
-        const h = rect.height;
-        const r = 5;
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-        ctx.fill();
+      ctx.fillStyle = '#3b3b3b';
+      const x = -rect.width / 2;
+      const y = -rect.height / 2;
+      const w = rect.width;
+      const h = rect.height;
+      const r = 5;
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
+      ctx.fill();
 
-        ctx.shadowColor = 'transparent';
+      ctx.shadowColor = 'transparent';
 
-        if (text) {
-          ctx.fillStyle = 'white';
-          ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(text, -rect.width / 2 + 12, 0);
-        }
-
-        ctx.restore();
-
-        canvas.style.position = 'fixed';
-        canvas.style.top = '-9999px';
-        document.body.appendChild(canvas);
-
-        e.dataTransfer.setDragImage(canvas, canvasWidth / 2, canvasHeight / 2);
-
-        setTimeout(() => {
-          canvas.remove();
-        }, 100);
+      if (text) {
+        ctx.fillStyle = 'white';
+        ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, -rect.width / 2 + 12, 0);
       }
 
+      ctx.restore();
+
+      canvas.style.position = 'fixed';
+      canvas.style.top = '-9999px';
+      document.body.appendChild(canvas);
+
+      e.dataTransfer.setDragImage(canvas, canvasWidth / 2, canvasHeight / 2);
+
       setTimeout(() => {
-        target.classList.add('dragging');
-      }, 0);
+        canvas.remove();
+      }, 100);
     }
+
+    setTimeout(() => {
+      target.classList.add('dragging');
+    }, 0);
   }
 
   handleDragEnd(e: DragEvent) {
@@ -266,7 +267,6 @@ export class List implements OnInit {
     if (listSlot) {
       this.boardService.hidePlaceholderSlot(listSlot);
     }
-    console.log('handleDragLeave');
     this.boardService.hideCardDragged();
   }
 
@@ -287,13 +287,16 @@ export class List implements OnInit {
 
     const data: ICardsUpdate[] = listSlot.cardSlots
       .filter((slot) => slot.card?.id !== +draggedCardId)
-      .map((slot, index) => {
-        return {
-          id: slot.card?.id || +draggedCardId,
-          position: index + 1,
-          list_id: listSlot.id,
-        };
-      });
+      .map((slot, index) => ({
+        card: slot.card,
+        position: index + 1,
+      }))
+      .filter((slot) => slot.position !== slot.card?.position)
+      .map((slot) => ({
+        id: slot.card?.id || +draggedCardId,
+        position: slot.position,
+        list_id: listSlot.id,
+      }));
 
     if (+sourceListId !== listSlot.id) {
       const sourceList = this.boardService.board()?.lists?.find((l) => l.id === +sourceListId);
@@ -302,8 +305,13 @@ export class List implements OnInit {
         const sourceUpdates = sourceList.cardSlots
           .filter((slot) => !!slot.card && slot.card.id !== +draggedCardId)
           .map((slot, index) => ({
-            id: slot.card!.id,
+            card: slot.card,
             position: index + 1, // Перераховуємо позиції 1, 2, 3...
+          }))
+          .filter((slot) => slot.position !== slot.card!.position)
+          .map((slot) => ({
+            id: slot.card!.id,
+            position: slot.position,
             list_id: sourceList.id,
           }));
         data.push(...sourceUpdates);
