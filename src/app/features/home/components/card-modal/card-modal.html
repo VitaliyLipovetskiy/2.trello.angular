@@ -34,12 +34,21 @@
             </label>
           </div>
           <div class="description">
-            <textarea
-              placeholder="Card description"
-              rows="{3}"
-              (blur)="handleInputOnBlur()"
-              [formField]="cardForm.description"
-            ></textarea>
+            @if (isEditingDescription() || !cardForm.description().value()) {
+              <textarea
+                #descriptionTextarea
+                placeholder="Card description"
+                rows="3"
+                (blur)="handleInputOnBlur()"
+                [formField]="cardForm.description"
+              ></textarea>
+            } @else {
+              <div
+                class="description_viewer"
+                (click)="toggleEditDescription()"
+                [innerHTML]="cardForm.description().value() | linkify"
+              ></div>
+            }
           </div>
         </div>
         <div class="modal_actions">

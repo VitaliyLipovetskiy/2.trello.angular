@@ -2,9 +2,11 @@ import {
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
+  ElementRef,
   inject,
   OnInit,
   signal,
+  viewChild,
 } from '@angular/core';
 import { BoardService } from '@app/features/home/services/board.service';
 import { getCardModalForm } from '@app/shared/helper/form-helper';
@@ -15,10 +17,11 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EscapeListenerDirective } from '@app/shared/directives/escape-listener.directive';
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs';
+import { LinkifyPipe } from '@app/shared/pipes/linkify.pipe';
 
 @Component({
   selector: 'tr-card-modal',
-  imports: [FormField, FormsModule, EscapeListenerDirective],
+  imports: [FormField, FormsModule, EscapeListenerDirective, LinkifyPipe],
   templateUrl: './card-modal.html',
   styleUrl: './card-modal.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +38,8 @@ export class CardModal implements OnInit {
   readonly card = this.boardService.card;
   readonly cardForm = getCardModalForm(this.cardModel);
   readonly cardModal = this.boardService.cardModal;
+  readonly isEditingDescription = signal(false);
+  readonly descriptionTextarea = viewChild<ElementRef<HTMLTextAreaElement>>('descriptionTextarea');
 
   ngOnInit() {
     this.initCard();
@@ -72,6 +77,7 @@ export class CardModal implements OnInit {
   }
 
   handleInputOnBlur() {
+    this.isEditingDescription.set(false);
     if (this.cardForm.title().invalid()) {
       this.setCardModel(this.card());
       this.cardForm().reset();
@@ -110,6 +116,13 @@ export class CardModal implements OnInit {
     if (target.className.includes('modals_wrapper')) {
       this.handleModalClose();
     }
+  }
+
+  toggleEditDescription() {
+    this.isEditingDescription.set(true);
+    setTimeout(() => {
+      this.descriptionTextarea()?.nativeElement.focus();
+    });
   }
 
   get isInvalidTitle() {
