@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   DestroyRef,
   inject,
@@ -28,10 +27,10 @@ import { getTitleForm } from '@app/shared/helper/form-helper';
 export class Board implements OnInit {
   private readonly _destroy$ = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly cdRef = inject(ChangeDetectorRef);
+  // private readonly cdRef = inject(ChangeDetectorRef);
   private readonly boardService = inject(BoardService);
   private readonly boardId = signal<number>(0);
-  readonly board = this.boardService.board();
+  readonly board = this.boardService.board;
   readonly titleModel = signal({ title: '', backgroundColor: '', titleReadonly: true });
   readonly titleForm = getTitleForm(this.titleModel);
 
@@ -41,7 +40,7 @@ export class Board implements OnInit {
   }
 
   private initBoard(): void {
-    this.activatedRoute.params.subscribe((params) => {
+    this.activatedRoute.params.pipe(takeUntilDestroyed(this._destroy$)).subscribe((params) => {
       this.boardId.set(params['boardId']);
     });
     this.activatedRoute.data
@@ -87,14 +86,14 @@ export class Board implements OnInit {
     if (this.titleForm.title().invalid()) {
       this.titleModel.set({
         ...this.titleModel(),
-        title: this.board?.title || '',
+        title: this.board()?.title ?? '',
         titleReadonly: true,
       });
       this.titleForm().reset();
       return;
     }
     this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
-    if (value.trim() !== this.board?.title.trim()) {
+    if (value.trim() !== this.board()?.title.trim()) {
       this.boardService
         .updateBoard(this.boardId(), { title: value.trim() })
         .pipe(
@@ -108,24 +107,24 @@ export class Board implements OnInit {
   handleCreateList(title: string) {
     const listData: IListCreate = {
       title,
-      position: (this.board?.lists?.length || 0) + 1,
+      position: (this.board()?.lists?.length ?? 0) + 1,
     };
     this.boardService
       .createList(this.boardId(), listData)
       .pipe(
-        tap(() => this.cdRef.markForCheck()),
+        // tap(() => this.cdRef.markForCheck()),
         takeUntilDestroyed(this._destroy$),
       )
       .subscribe();
   }
 
   handleRemoteList(listId: number) {
-    const title = this.board?.lists?.find((list) => list.id === listId)?.title;
+    const title = this.board()?.lists?.find((list) => list.id === listId)?.title;
     if (confirm('Are you sure to delete ' + title)) {
       this.boardService
         .removeListById(this.boardId(), listId)
         .pipe(
-          tap(() => this.cdRef.markForCheck()),
+          // tap(() => this.cdRef.markForCheck()),
           takeUntilDestroyed(this._destroy$),
         )
         .subscribe();

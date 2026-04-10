@@ -18,8 +18,8 @@ export const getTitleForm = (model: WritableSignal<ITitleModel>) =>
     pattern(schemaPath.title, /^[a-zа-яіїєґ0-9-._\s]+$/i, {
       message: 'Поле може містити лише літери, 0-9, пробіли, крапки, "-" і "_"',
     });
-    readonly(schemaPath.title, () => model().titleReadonly || false);
-    hidden(schemaPath.title, () => !(model().newElement || true));
+    readonly(schemaPath.title, () => model().titleReadonly ?? false);
+    hidden(schemaPath.title, () => !(model().newElement ?? true));
   });
 
 export const getCardModalForm = (model: WritableSignal<ICardModel>) =>

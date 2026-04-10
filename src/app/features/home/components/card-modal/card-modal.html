@@ -20,11 +20,11 @@
               id="title"
               type="text"
               [formField]="cardForm.title"
-              [class.title-invalid]="isInvalidTitle"
+              [class.title-invalid]="isInvalidTitle()"
               (blur)="handleInputOnBlur()"
               (keydown.escape)="handleEscape($event)"
             />
-            @if (isInvalidTitle) {
+            @if (isInvalidTitle()) {
               @for (error of cardForm.title().errors(); track error) {
                 <div class="error">{{ error.message }}</div>
               }
@@ -40,6 +40,7 @@
                 placeholder="Card description"
                 rows="3"
                 [formField]="cardForm.description"
+                (focus)="isEditingDescription.set(true)"
                 (blur)="handleInputOnBlur()"
                 (keydown.escape)="handleEscape($event)"
               ></textarea>

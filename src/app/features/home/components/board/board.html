@@ -29,14 +29,14 @@
           #inputColor
           type="color"
           class="color-input"
-          value="{{ this.titleModel().backgroundColor }}"
+          [value]="titleModel().backgroundColor"
           (change)="handleColorChange($event)"
         />
         <button
           class="color-swatch"
           [style]="{
-            backgroundColor: this.titleModel().backgroundColor,
-            color: this.titleModel().backgroundColor,
+            backgroundColor: titleModel().backgroundColor,
+            color: titleModel().backgroundColor,
           }"
           (click)="inputColor.click()"
         >
@@ -46,7 +46,7 @@
     </div>
   </header>
   <ol class="container">
-    @for (list of board?.lists; track list.id) {
+    @for (list of board()?.lists; track list.id) {
       <tr-list [listId]="list.id" (handleRemoteList)="handleRemoteList($event)"></tr-list>
     }
     <tr-list-create (handleCreateList)="handleCreateList($event)"></tr-list-create>

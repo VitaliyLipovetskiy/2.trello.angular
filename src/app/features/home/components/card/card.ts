@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
-  computed,
   effect,
   inject,
   input,
@@ -20,15 +19,7 @@ export class Card {
   private readonly boardService = inject(BoardService);
   private readonly cdRef = inject(ChangeDetectorRef);
   readonly cardId = input<number>();
-  readonly cardTitle = computed(
-    () =>
-      this.boardService
-        .board()
-        ?.lists?.find((list) =>
-          list.cardSlots?.some((cardSlot) => cardSlot.card?.id === this.cardId()),
-        )
-        ?.cardSlots?.find((cardSlot) => cardSlot.card?.id === this.cardId())?.card?.title,
-  );
+  readonly cardTitle = input<string>();
 
   private readonly _ = effect(() => {
     if (this.boardService.cardUpdatedId() === this.cardId()) {

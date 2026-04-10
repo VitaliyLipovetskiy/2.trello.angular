@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   ElementRef,
   inject,
@@ -31,7 +32,7 @@ export class CardModal implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly boardService = inject(BoardService);
-  private readonly boardId = this.boardService.board()?.id;
+  private readonly board = this.boardService.board;
   private readonly cardId = signal<number>(0);
   private readonly cardModel = signal({ title: '', description: '' });
   readonly list = this.boardService.list;
@@ -40,6 +41,11 @@ export class CardModal implements OnInit {
   readonly cardModal = this.boardService.cardModal;
   readonly isEditingDescription = signal(false);
   readonly descriptionTextarea = viewChild<ElementRef<HTMLTextAreaElement>>('descriptionTextarea');
+  readonly isInvalidTitle = computed(
+    () =>
+      this.cardForm.title().invalid() &&
+      (this.cardForm.title().dirty() || this.cardForm.title().touched()),
+  );
 
   ngOnInit() {
     this.initCard();
@@ -47,32 +53,39 @@ export class CardModal implements OnInit {
 
   private setCardModel(cardSlot: ICardSlot | undefined) {
     this.cardModel.set({
-      title: cardSlot?.card?.title || '',
-      description: cardSlot?.card?.description || '',
+      title: cardSlot?.card?.title ?? '',
+      description: cardSlot?.card?.description ?? '',
     });
   }
 
   private initCard(): void {
-    this.activatedRoute.params.subscribe((params) => {
-      this.cardId.set(params['cardId']);
+    this.activatedRoute.params.pipe(takeUntilDestroyed(this._destroy$)).subscribe((params) => {
+      const cardId = +params['cardId'];
+      this.cardId.set(cardId);
       this.boardService.setCardModal(true);
+      const boardId = this.board()?.id;
+      if (this.card()) {
+        this.setCardModel(this.card());
+      } else if (boardId) {
+        this.boardService
+          .getCardById(boardId, cardId)
+          .pipe(
+            tap((card) => this.setCardModel(card)),
+            takeUntilDestroyed(this._destroy$),
+          )
+          .subscribe();
+      }
     });
-    if (this.card()) {
-      this.setCardModel(this.card());
-    } else if (this.boardId) {
-      this.boardService
-        .getCardById(this.boardId, +this.cardId())
-        .pipe(
-          tap((card) => this.setCardModel(card)),
-          takeUntilDestroyed(this._destroy$),
-        )
-        .subscribe();
-    }
   }
 
   handleModalClose() {
+    const boardId = this.board()?.id;
+    if (!boardId) {
+      console.warn('boardId is undefined');
+      return;
+    }
     this.boardService.setCard(this.card(), undefined);
-    this.router.navigate(['/board', this.boardId]);
+    this.router.navigate(['/board', boardId]);
     this.boardService.setCardModal(false);
   }
 
@@ -95,11 +108,11 @@ export class CardModal implements OnInit {
       this.cardModel().description.trim() !== this.card()?.card?.description?.trim()
     ) {
       if (!this.card()) {
-        console.log('card is undefined');
+        console.warn('card is undefined');
         return;
       }
       if (!this.list()) {
-        console.log('list is undefined');
+        console.warn('list is undefined');
         return;
       }
       const cardData: ICardUpdate = {
@@ -107,12 +120,13 @@ export class CardModal implements OnInit {
         description: this.cardModel().description.trim(),
         list_id: this.list()!.id,
       };
-      if (!this.boardId) {
-        console.log('boardId is undefined');
+      const boardId = this.board()?.id;
+      if (!boardId) {
+        console.warn('boardId is undefined');
         return;
       }
       this.boardService
-        .updateCardById(this.boardId, this.card()!.card!.id, cardData)
+        .updateCardById(boardId, this.card()!.card!.id, cardData)
         .pipe(takeUntilDestroyed(this._destroy$))
         .subscribe();
     }
@@ -120,25 +134,26 @@ export class CardModal implements OnInit {
 
   handleClickOutside(e: MouseEvent) {
     const target = e.target as HTMLElement;
-    if (target.className.includes('modals_wrapper')) {
+    if (target.classList.contains('modals_wrapper')) {
       this.handleModalClose();
     }
   }
 
   handleDeleteCard() {
     const title = this.card()?.card?.title;
-    if (!this.boardId) {
-      console.log('boardId is undefined');
+    const boardId = this.board()?.id;
+    if (!boardId) {
+      console.warn('boardId is undefined');
       return;
     }
-    const listId = this.list()!.id;
+    const listId = this.list()?.id;
     if (!listId) {
-      console.log('list is undefined');
+      console.warn('list is undefined');
       return;
     }
     if (confirm(`Are you sure to delete ${title}`)) {
       this.boardService
-        .removeCardById(this.boardId, listId, this.cardId())
+        .removeCardById(boardId, listId, this.cardId())
         .pipe(
           tap(() => this.handleModalClose()),
           takeUntilDestroyed(this._destroy$),
@@ -152,12 +167,5 @@ export class CardModal implements OnInit {
     setTimeout(() => {
       this.descriptionTextarea()?.nativeElement.focus();
     });
-  }
-
-  get isInvalidTitle() {
-    return (
-      this.cardForm.title().invalid() &&
-      (this.cardForm.title().dirty() || this.cardForm.title().touched())
-    );
   }
 }

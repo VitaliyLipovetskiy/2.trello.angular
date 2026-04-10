@@ -1,5 +1,5 @@
 <div
-  [id]="listId()"
+  [id]=`list-${listId()}`
   class="list-wrapper"
   (dragover)="handleDragOver($event)"
   (dragleave)="handleDragLeave($event)"
@@ -28,7 +28,7 @@
       }
     </div>
     <ol class="container">
-      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.card?.id) {
+      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.position) {
         @if (cardSlot.card) {
           <li
             #cardElement
@@ -41,7 +41,7 @@
             (dragstart)="handleDragStart($event)"
             (dragend)="handleDragEnd($event)"
           >
-            <tr-card [cardId]="cardSlot.card.id"></tr-card>
+            <tr-card [cardId]="cardSlot.card.id" [cardTitle]="cardSlot.card.title"></tr-card>
           </li>
         } @else if (cardSlot.view) {
           <li class="card-wrapper" data-type="placeholder" [attr.data-position]="cardSlot.position">

@@ -1,6 +1,5 @@
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
   computed,
   DestroyRef,
@@ -36,8 +35,7 @@ export class List implements OnInit {
 
   private readonly _destroy$ = inject(DestroyRef);
   private readonly boardService = inject(BoardService);
-  private readonly cdRef = inject(ChangeDetectorRef);
-  private readonly boardId = computed(() => this.boardService.board()?.id)();
+  private readonly boardId = computed(() => this.boardService.board()?.id);
   readonly listId = input.required<number>();
   readonly handleRemoteList = output<number>();
   readonly titleModel = signal({ title: '', titleReadonly: true });
@@ -47,12 +45,11 @@ export class List implements OnInit {
   );
 
   ngOnInit() {
-    this.titleModel.set({ ...this.titleModel(), title: this.listSlot()?.title || '' });
+    this.titleModel.set({ ...this.titleModel(), title: this.listSlot()?.title ?? '' });
   }
 
   private readonly _ = effect(() => {
     if (this.boardService.listUpdatedId() === this.listId()) {
-      this.cdRef.markForCheck();
       this.boardService.clearListUpdatedId();
     }
   });
@@ -70,20 +67,21 @@ export class List implements OnInit {
     if (this.titleForm.title().invalid()) {
       this.titleModel.set({
         ...this.titleModel(),
-        title: this.listSlot()?.title || '',
+        title: this.listSlot()?.title ?? '',
         titleReadonly: true,
       });
       this.titleForm().reset();
       return;
     }
-    if (!this.boardId) {
+    const boardId = this.boardId();
+    if (!boardId) {
       console.log('boardId is undefined');
       return;
     }
     this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
     if (value.trim() !== this.listSlot()?.title.trim()) {
       this.boardService
-        .updateListById(this.boardId, this.listId(), { title: value.trim() })
+        .updateListById(boardId, this.listId(), { title: value.trim() })
         .pipe(
           tap(() => {
             this.titleModel.set({ ...this.titleModel(), title: value.trim() });
@@ -96,13 +94,14 @@ export class List implements OnInit {
   }
 
   handleCreateCard(title: string) {
-    if (!this.boardId) {
-      console.log('boardId is undefined');
+    const boardId = this.boardId();
+    if (!boardId) {
+      console.warn('boardId is undefined');
       return;
     }
     const listSlot = this.listSlot();
     if (!listSlot) {
-      console.log('list is undefined');
+      console.warn('list is undefined');
       return;
     }
     const newCard: ICardCreate = {
@@ -111,30 +110,27 @@ export class List implements OnInit {
       position: listSlot.cardSlots?.map((c) => c.position).reduce((a, b) => Math.max(a, b), 0) + 1,
     };
     this.boardService
-      .createCard(this.boardId, newCard)
-      .pipe(
-        tap(() => this.cdRef.markForCheck()),
-        takeUntilDestroyed(this._destroy$),
-      )
+      .createCard(boardId, newCard)
+      .pipe(takeUntilDestroyed(this._destroy$))
       .subscribe();
   }
 
   handleDragStart(e: DragEvent) {
     const target = e.currentTarget as HTMLLIElement;
     const cardId = target.dataset['id'];
-    this.boardService.setCardDragged(cardId || undefined, this.listId());
+    this.boardService.setCardDragged(cardId ? +cardId : undefined, this.listId());
 
     if (!e.dataTransfer) {
       return;
     }
-    e.dataTransfer.setData('card_id', cardId || '');
+    e.dataTransfer.setData('card_id', cardId ?? '');
     e.dataTransfer.setData('list_id', this.listId().toString());
     e.dataTransfer.effectAllowed = 'move';
 
     const rect = target.getBoundingClientRect();
 
-    const cardSlot = this.listSlot()?.cardSlots?.find((s) => s.card?.id === +(cardId || 0));
-    const text = cardSlot?.card?.title || '';
+    const cardSlot = this.listSlot()?.cardSlots?.find((s) => s.card?.id === +(cardId ?? 0));
+    const text = cardSlot?.card?.title ?? '';
 
     const padding = 40;
     const canvasWidth = rect.width + padding * 2;
@@ -227,13 +223,13 @@ export class List implements OnInit {
 
     const actualCards = listSlot.cardSlots
       .filter((s) => !!s.card)
-      .sort((a, b) => (a.card?.position || 0) - (b.card?.position || 0));
+      .sort((a, b) => (a.card?.position ?? 0) - (b.card?.position ?? 0));
 
     let targetPosition: number;
     if (targetIndex === -1) {
-      targetPosition = (actualCards.at(-1)?.card?.position || 0) + 1;
+      targetPosition = (actualCards.at(-1)?.card?.position ?? 0) + 1;
     } else {
-      targetPosition = actualCards[targetIndex]?.card?.position || 1;
+      targetPosition = actualCards[targetIndex]?.card?.position ?? 1;
     }
 
     this.boardService.showPlaceholderSlot(targetPosition, listSlot);
@@ -257,8 +253,9 @@ export class List implements OnInit {
     const draggedCardId = e.dataTransfer?.getData('card_id');
     const sourceListId = e.dataTransfer?.getData('list_id');
     const listSlot = this.listSlot();
+    const boardId = this.boardId();
 
-    if (!draggedCardId || !sourceListId || !this.boardId || !listSlot) {
+    if (!draggedCardId || !sourceListId || !boardId || !listSlot) {
       return;
     }
 
@@ -275,7 +272,7 @@ export class List implements OnInit {
       }))
       .filter((slot) => slot.position !== slot.card?.position)
       .map((slot) => ({
-        id: slot.card?.id || +draggedCardId,
+        id: slot.card?.id ?? +draggedCardId,
         position: slot.position,
         list_id: listSlot.id,
       }));
@@ -301,11 +298,8 @@ export class List implements OnInit {
     }
 
     this.boardService
-      .updateGroupCards(this.boardId, data)
-      .pipe(
-        tap(() => this.cdRef.markForCheck()),
-        takeUntilDestroyed(this._destroy$),
-      )
+      .updateGroupCards(boardId, data)
+      .pipe(takeUntilDestroyed(this._destroy$))
       .subscribe();
 
     this.boardService.hidePlaceholderSlot(listSlot);
