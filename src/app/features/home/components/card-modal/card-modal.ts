@@ -65,7 +65,8 @@ export class CardModal implements OnInit {
       const cardId = +params['cardId'];
       this.cardId.set(cardId);
       this.boardService.setCardModal(true);
-      const boardId = this.board()?.id;
+      const boardId =
+        this.board()?.id ?? +(this.activatedRoute.parent?.snapshot?.params['boardId'] ?? 0);
       if (this.card()) {
         this.setCardModel(this.card());
       } else if (boardId) {

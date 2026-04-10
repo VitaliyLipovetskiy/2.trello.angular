@@ -46,7 +46,7 @@ export class List implements OnInit {
   );
 
   ngOnInit() {
-    this.titleModel.set({ ...this.titleModel(), title: this.listSlot()?.title ?? '' });
+    this.titleModel.update((model) => ({ ...model, title: this.listSlot()?.title ?? '' }));
   }
 
   private readonly _ = effect(() => {
@@ -60,17 +60,17 @@ export class List implements OnInit {
   }
 
   handleTitleClick() {
-    this.titleModel.set({ ...this.titleModel(), titleReadonly: false });
+    this.titleModel.update((model) => ({ ...model, titleReadonly: false }));
   }
 
   handleTitleBlur(e: Event) {
     const { value } = e.target as HTMLInputElement;
     if (this.titleForm.title().invalid()) {
-      this.titleModel.set({
-        ...this.titleModel(),
+      this.titleModel.update((model) => ({
+        ...model,
         title: this.listSlot()?.title ?? '',
         titleReadonly: true,
-      });
+      }));
       this.titleForm().reset();
       return;
     }
@@ -79,13 +79,13 @@ export class List implements OnInit {
       console.log('boardId is undefined');
       return;
     }
-    this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
+    this.titleModel.update((model) => ({ ...model, titleReadonly: true }));
     if (value.trim() !== this.listSlot()?.title.trim()) {
       this.boardService
         .updateListById(boardId, this.listId(), { title: value.trim() })
         .pipe(
           tap(() => {
-            this.titleModel.set({ ...this.titleModel(), title: value.trim() });
+            this.titleModel.update((model) => ({ ...model, title: value.trim() }));
             this.titleForm().reset();
           }),
           takeUntilDestroyed(this._destroy$),
@@ -108,7 +108,8 @@ export class List implements OnInit {
     const newCard: ICardCreate = {
       title,
       list_id: listSlot.id,
-      position: listSlot.cardSlots?.map((c) => c.position).reduce((a, b) => Math.max(a, b), 0) + 1,
+      position:
+        (listSlot.cardSlots?.map((c) => c.position).reduce((a, b) => Math.max(a, b), -1) ?? -1) + 1,
     };
     this.boardService
       .createCard(boardId, newCard)
@@ -251,41 +252,46 @@ export class List implements OnInit {
       return;
     }
 
-    const placeholderHidden = listSlot.cardSlots.some((slot) => !slot.card && !slot.view);
-    if (placeholderHidden) {
+    // Abort if no visible placeholder — user dragged away without valid drop target
+    const placeholder = listSlot.cardSlots.find((s) => !s.card && s.view);
+    if (!placeholder) {
       return;
     }
 
-    const data: ICardsUpdate[] = listSlot.cardSlots
-      .filter((slot) => slot.card?.id !== +draggedCardId)
-      .map((slot, index) => ({
-        card: slot.card,
-        position: index + 1,
-      }))
-      .filter((slot) => slot.position !== slot.card?.position)
-      .map((slot) => ({
-        id: slot.card?.id ?? +draggedCardId,
-        position: slot.position,
-        list_id: listSlot.id,
-      }));
+    const placeholderPosition = placeholder.position;
 
+    // Other cards in target list sorted by display position (positions shifted by showPlaceholderSlot)
+    const otherCards = listSlot.cardSlots
+      .filter((s) => !!s.card && s.card.id !== +draggedCardId)
+      .sort((a, b) => a.position - b.position);
+
+    // Dragged card goes after all other cards that are before the placeholder
+    const insertIndex = otherCards.filter((s) => s.position < placeholderPosition).length;
+    const draggedNewPos = insertIndex + 1;
+
+    const data: ICardsUpdate[] = [
+      { id: +draggedCardId, position: draggedNewPos, list_id: listSlot.id },
+    ];
+
+    otherCards.forEach((slot, i) => {
+      const newPos = i < insertIndex ? i + 1 : i + 2;
+      if (newPos !== slot.card!.position) {
+        data.push({ id: slot.card!.id, position: newPos, list_id: listSlot.id });
+      }
+    });
+
+    // For cross-list drag: renumber remaining cards in the source list
     if (+sourceListId !== listSlot.id) {
       const sourceList = this.boardService.board()?.lists?.find((l) => l.id === +sourceListId);
       if (sourceList) {
-        // Беремо всі картки вихідного списку, крім тієї, що перетягнули
-        const sourceUpdates = sourceList.cardSlots
-          .filter((slot) => !!slot.card && slot.card.id !== +draggedCardId)
-          .map((slot, index) => ({
-            card: slot.card,
-            position: index + 1,
-          }))
-          .filter((slot) => slot.position !== slot.card!.position)
-          .map((slot) => ({
-            id: slot.card!.id,
-            position: slot.position,
-            list_id: sourceList.id,
-          }));
-        data.push(...sourceUpdates);
+        sourceList.cardSlots
+          .filter((s) => !!s.card && s.card.id !== +draggedCardId)
+          .sort((a, b) => a.card!.position - b.card!.position)
+          .forEach((slot, i) => {
+            if (i + 1 !== slot.card!.position) {
+              data.push({ id: slot.card!.id, position: i + 1, list_id: sourceList.id });
+            }
+          });
       }
     }
 

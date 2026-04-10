@@ -1,4 +1,4 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform, SecurityContext } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Pipe({
@@ -21,18 +21,19 @@ export class MarkdownPipe implements PipeTransform {
       .replaceAll(/^## (.*?)$/gm, '<h2>$1</h2>')
       .replaceAll(/^### (.*?)$/gm, '<h3>$1</h3>')
       .replaceAll(/(\*\*|__)(.*?)(\*\*|__)/g, '<strong>$2</strong>')
-      .replaceAll(/(\*|_)(.*?)(\*|_)/g, '<em>$2</em>')
+      .replaceAll(/([*_])(.*?)([*_])/g, '<em>$2</em>')
       .replaceAll(/~~(.*?)~~/g, '<del>$1</del>')
       .replaceAll(/`(.*?)`/g, '<code>$1</code>')
-      .replaceAll(
-        /\[(.*?)]\((.*?)\)/g,
-        '<a href="$1" target="_blank" rel="noopener noreferrer">$1</a>',
-      )
-      .replaceAll(urlPattern, (match, url) => {
+      .replaceAll(/\[(.*?)]\((.*?)\)/g, (_, text, url) => {
+        if (!/^https?:\/\//i.test(url)) return text;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+      })
+      .replaceAll(urlPattern, (_, url) => {
         return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>`;
       })
       .replaceAll('\n', '<br>');
 
-    return this.sanitizer.bypassSecurityTrustHtml(html);
+    const sanitized = this.sanitizer.sanitize(SecurityContext.HTML, html) ?? '';
+    return this.sanitizer.bypassSecurityTrustHtml(sanitized);
   }
 }

@@ -13,6 +13,7 @@ export class ConfirmService {
   readonly state = this._state.asReadonly();
 
   confirm(message: string): Promise<boolean> {
+    this._state()?.resolve(false);
     return new Promise((resolve) => {
       this._state.set({ message, resolve });
     });

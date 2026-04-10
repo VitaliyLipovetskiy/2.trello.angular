@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   output,
   signal,
   ViewChild,
@@ -23,15 +22,15 @@ export class CardCreate {
   readonly handleCreateCard = output<string>();
   readonly titleModel = signal({ title: '', newElement: false });
   readonly titleForm = getTitleForm(this.titleModel);
-  @ViewChild('titleInput') private readonly titleInput = inject(ElementRef);
+  @ViewChild('titleInput') private readonly titleInput!: ElementRef<HTMLTextAreaElement>;
 
   private setDefault() {
-    this.titleModel.set({ ...this.titleModel(), title: '', newElement: false });
+    this.titleModel.update((model) => ({ ...model, title: '', newElement: false }));
     this.titleForm().reset();
   }
 
   handleClickAddCard() {
-    this.titleModel.set({ ...this.titleModel(), newElement: true });
+    this.titleModel.update((model) => ({ ...model, newElement: true }));
   }
 
   handleClickCloseCreateCard() {

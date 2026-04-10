@@ -31,7 +31,7 @@ export class ListCreate {
   }
 
   handleClickAddList() {
-    this.titleModel.set({ ...this.titleModel(), newElement: true });
+    this.titleModel.update((model) => ({ ...model, newElement: true }));
   }
 
   handleClickCloseCreateList() {

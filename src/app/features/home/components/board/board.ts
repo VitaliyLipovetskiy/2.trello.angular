@@ -49,17 +49,17 @@ export class Board implements OnInit {
 
   private initBoard(): void {
     this.activatedRoute.params.pipe(takeUntilDestroyed(this._destroy$)).subscribe((params) => {
-      this.boardId.set(params['boardId']);
+      this.boardId.set(+params['boardId']);
     });
     this.activatedRoute.data
       .pipe(
         tap(({ board }) => {
           if (board) {
-            this.titleModel.set({
-              ...this.titleModel(),
+            this.titleModel.update((model) => ({
+              ...model,
               title: board.title,
               backgroundColor: board.custom?.background,
-            });
+            }));
           }
         }),
         takeUntilDestroyed(this._destroy$),
@@ -72,13 +72,13 @@ export class Board implements OnInit {
     const { value } = e.target as HTMLInputElement;
     if (value !== this.titleModel().backgroundColor) {
       const boardData: IBoardUpdate = {
-        title: this.titleForm.title().value(),
+        title: this.board()?.title ?? '',
         custom: { background: value },
       };
       this.boardService
         .updateBoard(this.boardId(), boardData)
         .pipe(
-          tap(() => this.titleModel.set({ ...this.titleModel(), backgroundColor: value })),
+          tap(() => this.titleModel.update((model) => ({ ...model, backgroundColor: value }))),
           takeUntilDestroyed(this._destroy$),
         )
         .subscribe();
@@ -86,26 +86,26 @@ export class Board implements OnInit {
   }
 
   handleTitleClick() {
-    this.titleModel.set({ ...this.titleModel(), titleReadonly: false });
+    this.titleModel.update((model) => ({ ...model, titleReadonly: false }));
   }
 
   handleTitleBlur(e: Event) {
     const { value } = e.target as HTMLInputElement;
     if (this.titleForm.title().invalid()) {
-      this.titleModel.set({
-        ...this.titleModel(),
+      this.titleModel.update((model) => ({
+        ...model,
         title: this.board()?.title ?? '',
         titleReadonly: true,
-      });
+      }));
       this.titleForm().reset();
       return;
     }
-    this.titleModel.set({ ...this.titleModel(), titleReadonly: true });
+    this.titleModel.update((model) => ({ ...model, titleReadonly: true }));
     if (value.trim() !== this.board()?.title.trim()) {
       this.boardService
         .updateBoard(this.boardId(), { title: value.trim() })
         .pipe(
-          tap(() => this.titleModel.set({ ...this.titleModel(), title: value.trim() })),
+          tap(() => this.titleModel.update((model) => ({ ...model, title: value.trim() }))),
           takeUntilDestroyed(this._destroy$),
         )
         .subscribe();

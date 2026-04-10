@@ -154,7 +154,7 @@ export class BoardService {
             }) ?? [];
           this._list.set(updatedListSlot);
           this._listUpdatedId.set(listId);
-          this._board.set({ ...currentBoard, lists: listSlots });
+          this._board.update((board) => ({ ...board!, lists: listSlots }));
           this.toastr.success('List updated successfully!', 'Success!');
         } else {
           this.toastr.error('List not updated!', 'Error!');
@@ -372,7 +372,7 @@ export class BoardService {
     if (!currentBoard) return;
     const listSlots: IListSlot[] =
       currentBoard.lists?.map((list) => (list.id === currentList.id ? currentList : list)) ?? [];
-    this._board.set({ ...currentBoard, lists: listSlots });
+    this._board.update((board) => ({ ...board!, lists: listSlots }));
   }
 
   setCardDragged(cardId: number | undefined, listId: number | undefined) {
@@ -389,7 +389,7 @@ export class BoardService {
   hideCardDragged() {
     const cardDragged = this._cardDragged();
     if (cardDragged) {
-      this._cardDragged.set({ ...cardDragged, view: false });
+      this._cardDragged.update((cardSlot) => ({ ...cardSlot!, view: false }));
     }
   }
 
