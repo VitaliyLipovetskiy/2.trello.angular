@@ -123,3 +123,25 @@
     height: 100%;
   }
 }
+
+.list-item {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  list-style: none;
+
+  &.dragging {
+    opacity: 0.4;
+  }
+}
+
+.list-placeholder {
+  list-style: none;
+  width: 260px;
+  min-height: 80px;
+  margin: 5px;
+  border: 2px dashed $secondary-color;
+  border-radius: 10px;
+  flex-shrink: 0;
+  background-color: rgba(255, 255, 255, 0.05);
+}

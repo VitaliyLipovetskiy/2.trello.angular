@@ -12,6 +12,7 @@ import {
   IList,
   IListCreate,
   IListSlot,
+  IListsUpdate,
   IListUpdate,
   IResult,
   IResultCreated,
@@ -32,8 +33,9 @@ export class BoardService {
   private readonly _cardUpdatedId = signal<number | undefined>(undefined);
   private readonly _listUpdatedId = signal<number | undefined>(undefined);
   private readonly _cardModal = signal(false);
-  /** No public accessor — used only by drag-drop methods within this service. */
   private readonly _cardDragged = signal<ICardSlot | undefined>(undefined);
+  private readonly _listDragged = signal<number | undefined>(undefined);
+  private readonly _listPlaceholderIndex = signal<number | undefined>(undefined);
   readonly boards = this._boards.asReadonly();
   readonly board = this._board.asReadonly();
   readonly list = this._list.asReadonly();
@@ -41,6 +43,8 @@ export class BoardService {
   readonly cardUpdatedId = this._cardUpdatedId.asReadonly();
   readonly listUpdatedId = this._listUpdatedId.asReadonly();
   readonly cardModal = this._cardModal.asReadonly();
+  readonly listDraggedId = this._listDragged.asReadonly();
+  readonly listPlaceholderIndex = this._listPlaceholderIndex.asReadonly();
 
   getBoards(): Observable<IBoard[]> {
     return this.http.get<{ boards: IBoard[] }>('board').pipe(
@@ -387,6 +391,28 @@ export class BoardService {
     if (cardDragged) {
       this._cardDragged.set({ ...cardDragged, view: false });
     }
+  }
+
+  setListDragged(listId: number | undefined) {
+    this._listDragged.set(listId);
+  }
+
+  setListPlaceholderIndex(index: number | undefined) {
+    this._listPlaceholderIndex.set(index);
+  }
+
+  updateGroupLists(boardId: number, data: IListsUpdate[]): Observable<IBoardSlot> {
+    return this.http.put<IResult>(`board/${boardId}/list`, data).pipe(
+      switchMap(({ result }) => {
+        if (result !== 'Updated') {
+          this.toastr.error('Lists not updated!', 'Error!');
+          return EMPTY;
+        }
+        this.toastr.success('Lists updated successfully!', 'Success!');
+        return this.getBoardById(boardId);
+      }),
+      catchError((error) => this.handleError(error)),
+    );
   }
 
   private appendCardToList(listSlot: IListSlot, data: ICardCreate, id: number) {

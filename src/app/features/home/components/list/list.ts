@@ -21,6 +21,7 @@ import { BoardService } from '@app/features/home/services/board.service';
 import { tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getTitleForm } from '@app/shared/helper/form-helper';
+import { drawRoundedRect } from '@app/shared/helper/canvas.helper';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -116,6 +117,7 @@ export class List implements OnInit {
   }
 
   handleDragStart(e: DragEvent) {
+    e.stopPropagation();
     const target = e.currentTarget as HTMLLIElement;
     const cardId = target.dataset['id'];
     this.boardService.setCardDragged(cardId ? +cardId : undefined, this.listId());
@@ -124,7 +126,7 @@ export class List implements OnInit {
       return;
     }
     e.dataTransfer.setData('card_id', cardId ?? '');
-    e.dataTransfer.setData('list_id', this.listId().toString());
+    e.dataTransfer.setData('source_list_id', this.listId().toString());
     e.dataTransfer.effectAllowed = 'move';
 
     const rect = target.getBoundingClientRect();
@@ -158,18 +160,7 @@ export class List implements OnInit {
       const y = -rect.height / 2;
       const w = rect.width;
       const h = rect.height;
-      const r = 5;
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + w - r, y);
-      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      ctx.lineTo(x + r, y + h);
-      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
+      drawRoundedRect(ctx, x, y, w, h, 5);
       ctx.fill();
 
       ctx.shadowColor = 'transparent';
@@ -236,6 +227,7 @@ export class List implements OnInit {
   }
 
   handleDragLeave(e: DragEvent) {
+    if (!e.dataTransfer?.types?.includes('card_id')) return;
     const list = (e.currentTarget as HTMLDivElement).children[0];
     const relatedTarget = e.relatedTarget as HTMLDivElement;
     if (list.contains(relatedTarget)) {
@@ -251,7 +243,7 @@ export class List implements OnInit {
   handleDrop(e: DragEvent) {
     e.preventDefault();
     const draggedCardId = e.dataTransfer?.getData('card_id');
-    const sourceListId = e.dataTransfer?.getData('list_id');
+    const sourceListId = e.dataTransfer?.getData('source_list_id');
     const listSlot = this.listSlot();
     const boardId = this.boardId();
 

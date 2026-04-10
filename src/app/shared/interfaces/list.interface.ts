@@ -23,3 +23,8 @@ export interface IListUpdate {
   title?: string;
   position?: number;
 }
+
+export interface IListsUpdate {
+  id: number;
+  position: number;
+}

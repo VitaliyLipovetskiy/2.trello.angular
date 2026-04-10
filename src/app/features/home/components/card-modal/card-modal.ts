@@ -19,6 +19,7 @@ import { EscapeListenerDirective } from '@app/shared/directives/escape-listener.
 import { ActivatedRoute, Router } from '@angular/router';
 import { tap } from 'rxjs';
 import { MarkdownPipe } from '@app/shared/pipes/markdown.pipe';
+import { ConfirmService } from '@app/shared/services/confirm.service';
 
 @Component({
   selector: 'tr-card-modal',
@@ -32,6 +33,7 @@ export class CardModal implements OnInit {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly boardService = inject(BoardService);
+  private readonly confirmService = inject(ConfirmService);
   private readonly board = this.boardService.board;
   private readonly cardId = signal<number>(0);
   private readonly cardModel = signal({ title: '', description: '' });
@@ -139,7 +141,7 @@ export class CardModal implements OnInit {
     }
   }
 
-  handleDeleteCard() {
+  async handleDeleteCard() {
     const title = this.card()?.card?.title;
     const boardId = this.board()?.id;
     if (!boardId) {
@@ -151,7 +153,7 @@ export class CardModal implements OnInit {
       console.warn('list is undefined');
       return;
     }
-    if (confirm(`Are you sure to delete ${title}`)) {
+    if (await this.confirmService.confirm(`Видалити картку "${title}"?`)) {
       this.boardService
         .removeCardById(boardId, listId, this.cardId())
         .pipe(
