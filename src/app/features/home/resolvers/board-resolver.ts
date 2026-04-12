@@ -7,8 +7,7 @@ export const BoardResolver: ResolveFn<IBoardSlot | Error> = (route: ActivatedRou
   const boardService = inject(BoardService);
   const id = route.paramMap.get('boardId');
   if (!id || !/^\d+$/.test(id)) {
-    console.log('Bad id');
-    return new Error('Bad id');
+    throw new Error('Bad id');
   }
   return boardService.getBoardById(+id);
 };

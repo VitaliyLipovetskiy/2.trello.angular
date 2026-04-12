@@ -462,7 +462,7 @@ export class BoardService {
   private handleError(error: unknown): Observable<never> {
     console.error(error);
     if (error instanceof HttpErrorResponse) {
-      this.toastr.error(error.error?.message, 'Error!');
+      this.toastr.error(error.error?.message || `${error.status}`, 'Error!');
     } else {
       this.toastr.error('Something went wrong!', 'Error!');
     }

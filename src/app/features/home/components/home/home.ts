@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BoardCreate } from '@app/features/home/components';
 import { BoardService } from '@app/features/home/services/board.service';
@@ -19,7 +26,7 @@ export class Home implements OnInit {
   private readonly boardService = inject(BoardService);
   private readonly confirmService = inject(ConfirmService);
   readonly boards = this.boardService.boards;
-  boardModal = false;
+  boardModal = signal(false);
 
   ngOnInit() {
     this.activatedRoute.data.pipe(takeUntilDestroyed(this._destroy$)).subscribe();
@@ -29,7 +36,7 @@ export class Home implements OnInit {
     this.boardService
       .createBoard(title)
       .pipe(
-        tap(() => (this.boardModal = false)),
+        tap(() => this.boardModal.set(false)),
         takeUntilDestroyed(this._destroy$),
       )
       .subscribe();

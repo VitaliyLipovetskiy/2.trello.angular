@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { Card, CardCreate } from '@app/features/home/components';
 import { FormField } from '@angular/forms/signals';
 import { BoardService } from '@app/features/home/services/board.service';
-import { tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getTitleForm } from '@app/shared/helper/form-helper';
 import { drawRoundedRect } from '@app/shared/helper/canvas.helper';
@@ -45,15 +45,17 @@ export class List implements OnInit {
     this.boardService.board()?.lists?.find((list) => list.id === this.listId()),
   );
 
+  constructor() {
+    effect(() => {
+      if (this.boardService.listUpdatedId() === this.listId()) {
+        this.boardService.clearListUpdatedId();
+      }
+    });
+  }
+
   ngOnInit() {
     this.titleModel.update((model) => ({ ...model, title: this.listSlot()?.title ?? '' }));
   }
-
-  private readonly _ = effect(() => {
-    if (this.boardService.listUpdatedId() === this.listId()) {
-      this.boardService.clearListUpdatedId();
-    }
-  });
 
   handleClickRemoveList() {
     this.handleRemoteList.emit(this.listId());
@@ -109,7 +111,7 @@ export class List implements OnInit {
       title,
       list_id: listSlot.id,
       position:
-        (listSlot.cardSlots?.map((c) => c.position).reduce((a, b) => Math.max(a, b), -1) ?? -1) + 1,
+        Math.max(0, ...listSlot.cardSlots.filter((s) => !!s.card).map((s) => s.card!.position)) + 1,
     };
     this.boardService
       .createCard(boardId, newCard)
@@ -294,13 +296,19 @@ export class List implements OnInit {
           });
       }
     }
-
+    let succeeded = false;
     this.boardService
       .updateGroupCards(boardId, data)
-      .pipe(takeUntilDestroyed(this._destroy$))
+      .pipe(
+        tap(() => {
+          succeeded = true;
+        }),
+        takeUntilDestroyed(this._destroy$),
+        finalize(() => {
+          if (!succeeded) this.boardService.hidePlaceholderSlot(listSlot);
+          this.boardService.setCardDragged(undefined, undefined);
+        }),
+      )
       .subscribe();
-
-    this.boardService.hidePlaceholderSlot(listSlot);
-    this.boardService.setCardDragged(undefined, undefined);
   }
 }

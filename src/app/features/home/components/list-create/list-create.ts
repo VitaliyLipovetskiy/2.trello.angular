@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   output,
   signal,
   ViewChild,
@@ -23,7 +22,7 @@ export class ListCreate {
   readonly handleCreateList = output<string>();
   readonly titleModel = signal({ title: '', newElement: false });
   readonly titleForm = getTitleForm(this.titleModel);
-  @ViewChild('titleInput') private readonly titleInput = inject(ElementRef);
+  @ViewChild('titleInput') private readonly titleInput!: ElementRef<HTMLInputElement>;
 
   private setDefault() {
     this.titleModel.set({ title: '', newElement: false });
@@ -50,7 +49,7 @@ export class ListCreate {
     const eventTarget = e.relatedTarget as HTMLElement;
     if (eventTarget === null) {
       this.titleInput.nativeElement.focus();
-    } else if (eventTarget.className !== 'list-input') {
+    } else if (!eventTarget.classList.contains('list-input')) {
       this.setDefault();
     }
   }

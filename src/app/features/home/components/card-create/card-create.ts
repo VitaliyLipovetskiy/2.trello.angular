@@ -48,7 +48,7 @@ export class CardCreate {
     const eventTarget = e.relatedTarget as HTMLElement;
     if (eventTarget === null) {
       this.titleInput.nativeElement.focus();
-    } else if (eventTarget.className !== 'card-input') {
+    } else if (!eventTarget.classList.contains('card-input')) {
       this.setDefault();
     }
   }

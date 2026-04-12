@@ -13,9 +13,11 @@ export class Card {
   readonly cardId = input<number>();
   readonly cardTitle = input<string>();
 
-  private readonly _ = effect(() => {
-    if (this.boardService.cardUpdatedId() === this.cardId()) {
-      this.boardService.clearCardUpdatedId();
-    }
-  });
+  constructor() {
+    effect(() => {
+      if (this.boardService.cardUpdatedId() === this.cardId()) {
+        this.boardService.clearCardUpdatedId();
+      }
+    });
+  }
 }

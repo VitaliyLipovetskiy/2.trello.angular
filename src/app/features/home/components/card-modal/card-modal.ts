@@ -17,7 +17,7 @@ import { ICardSlot, ICardUpdate } from '@app/shared/interfaces';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EscapeListenerDirective } from '@app/shared/directives/escape-listener.directive';
 import { ActivatedRoute, Router } from '@angular/router';
-import { tap } from 'rxjs';
+import { EMPTY, switchMap, tap } from 'rxjs';
 import { MarkdownPipe } from '@app/shared/pipes/markdown.pipe';
 import { ConfirmService } from '@app/shared/services/confirm.service';
 
@@ -61,24 +61,27 @@ export class CardModal implements OnInit {
   }
 
   private initCard(): void {
-    this.activatedRoute.params.pipe(takeUntilDestroyed(this._destroy$)).subscribe((params) => {
-      const cardId = +params['cardId'];
-      this.cardId.set(cardId);
-      this.boardService.setCardModal(true);
-      const boardId =
-        this.board()?.id ?? +(this.activatedRoute.parent?.snapshot?.params['boardId'] ?? 0);
-      if (this.card()) {
-        this.setCardModel(this.card());
-      } else if (boardId) {
-        this.boardService
-          .getCardById(boardId, cardId)
-          .pipe(
-            tap((card) => this.setCardModel(card)),
-            takeUntilDestroyed(this._destroy$),
-          )
-          .subscribe();
-      }
-    });
+    this.activatedRoute.params
+      .pipe(
+        takeUntilDestroyed(this._destroy$),
+        switchMap((params) => {
+          const cardId = +params['cardId'];
+          this.cardId.set(cardId);
+          this.boardService.setCardModal(true);
+          const boardId =
+            this.board()?.id ?? +(this.activatedRoute.parent?.snapshot?.params['boardId'] ?? 0);
+          if (this.card()?.card?.id === cardId) {
+            this.setCardModel(this.card());
+            return EMPTY;
+          }
+          return boardId
+            ? this.boardService
+                .getCardById(boardId, cardId)
+                .pipe(tap((card) => this.setCardModel(card)))
+            : EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   handleModalClose() {
@@ -110,18 +113,20 @@ export class CardModal implements OnInit {
       this.cardModel().title.trim() !== this.card()?.card?.title?.trim() ||
       this.cardModel().description.trim() !== this.card()?.card?.description?.trim()
     ) {
-      if (!this.card()) {
+      const cardId = this.card()?.card?.id;
+      if (!cardId) {
         console.warn('card is undefined');
         return;
       }
-      if (!this.list()) {
+      const listId = this.list()?.id;
+      if (!listId) {
         console.warn('list is undefined');
         return;
       }
       const cardData: ICardUpdate = {
         title: this.cardModel().title.trim(),
         description: this.cardModel().description.trim(),
-        list_id: this.list()!.id,
+        list_id: listId,
       };
       const boardId = this.board()?.id;
       if (!boardId) {
@@ -129,7 +134,7 @@ export class CardModal implements OnInit {
         return;
       }
       this.boardService
-        .updateCardById(boardId, this.card()!.card!.id, cardData)
+        .updateCardById(boardId, cardId, cardData)
         .pipe(takeUntilDestroyed(this._destroy$))
         .subscribe();
     }
@@ -169,6 +174,6 @@ export class CardModal implements OnInit {
     this.isEditingDescription.set(true);
     setTimeout(() => {
       this.descriptionTextarea()?.nativeElement.focus();
-    });
+    }, 0);
   }
 }

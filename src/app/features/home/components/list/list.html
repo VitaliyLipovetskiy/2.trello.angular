@@ -28,7 +28,7 @@
       }
     </div>
     <ol class="container">
-      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.position) {
+      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.card?.id ?? -1) {
         @if (cardSlot.card) {
           <li
             #cardElement

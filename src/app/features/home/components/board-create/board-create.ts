@@ -43,8 +43,8 @@ export class BoardCreate implements OnInit {
 
   get isDisabledCreateBtn() {
     return (
-      this.titleForm.title().invalid() &&
-      !(this.titleForm.title().dirty() && this.titleForm.title().touched())
+      this.titleForm.title().invalid() ||
+      !(this.titleForm.title().dirty() || this.titleForm.title().touched())
     );
   }
 

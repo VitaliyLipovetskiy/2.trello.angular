@@ -119,10 +119,7 @@ export class Board implements OnInit {
     };
     this.boardService
       .createList(this.boardId(), listData)
-      .pipe(
-        // tap(() => this.cdRef.markForCheck()),
-        takeUntilDestroyed(this._destroy$),
-      )
+      .pipe(takeUntilDestroyed(this._destroy$))
       .subscribe();
   }
 
@@ -131,10 +128,7 @@ export class Board implements OnInit {
     if (await this.confirmService.confirm(`Видалити список "${title}"?`)) {
       this.boardService
         .removeListById(this.boardId(), listId)
-        .pipe(
-          // tap(() => this.cdRef.markForCheck()),
-          takeUntilDestroyed(this._destroy$),
-        )
+        .pipe(takeUntilDestroyed(this._destroy$))
         .subscribe();
     }
   }
