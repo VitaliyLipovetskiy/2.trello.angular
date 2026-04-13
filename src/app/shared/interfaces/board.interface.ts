@@ -1,8 +1,4 @@
-import { IList } from './list.interface';
-
-export interface IBoards {
-  boards: IBoard[];
-}
+import { IList, IListSlot } from './list.interface';
 
 export interface IBoard {
   id: number;
@@ -11,6 +7,15 @@ export interface IBoard {
     background: string;
   };
   lists?: IList[];
+}
+
+export interface IBoardSlot {
+  id: number;
+  title: string;
+  custom?: {
+    background: string;
+  };
+  lists?: IListSlot[];
 }
 
 export interface IBoardUpdate {

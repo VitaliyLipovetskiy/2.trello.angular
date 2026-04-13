@@ -29,14 +29,14 @@
           #inputColor
           type="color"
           class="color-input"
-          value="{{ this.titleModel().backgroundColor }}"
+          [value]="titleModel().backgroundColor"
           (change)="handleColorChange($event)"
         />
         <button
           class="color-swatch"
           [style]="{
-            backgroundColor: this.titleModel().backgroundColor,
-            color: this.titleModel().backgroundColor,
+            backgroundColor: titleModel().backgroundColor,
+            color: titleModel().backgroundColor,
           }"
           (click)="inputColor.click()"
         >
@@ -45,10 +45,32 @@
       </div>
     </div>
   </header>
-  <div class="container">
-    @for (list of board?.lists; track list.id) {
-      <tr-list [listId]="list.id" (handleRemoteList)="handleRemoteList($event)"></tr-list>
+  <ol
+    class="container"
+    (dragover)="handleListDragOver($event)"
+    (dragleave)="handleListDragLeave($event)"
+    (drop)="handleListDrop($event)"
+  >
+    @for (list of board()?.lists; track list.id; let i = $index) {
+      @if (listPlaceholderIndex() === i) {
+        <li class="list-placeholder"></li>
+      }
+      <li
+        #listElement
+        class="list-item"
+        [class.dragging]="listDraggedId() === list.id"
+        draggable="true"
+        (dragstart)="handleListDragStart($event, list.id)"
+        (dragend)="handleListDragEnd($event)"
+      >
+        <tr-list [listId]="list.id" (handleRemoteList)="handleRemoteList($event)"></tr-list>
+      </li>
     }
-    <tr-list-create (handleCreateList)="handleCreateList($event)"></tr-list-create>
-  </div>
+    @if (listPlaceholderIndex() === board()?.lists?.length) {
+      <li class="list-placeholder"></li>
+    }
+    <li class="list-item">
+      <tr-list-create (handleCreateList)="handleCreateList($event)"></tr-list-create>
+    </li>
+  </ol>
 </div>

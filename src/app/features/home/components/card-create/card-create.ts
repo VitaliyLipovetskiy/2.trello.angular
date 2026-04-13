@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   output,
   signal,
   ViewChild,
@@ -20,18 +19,18 @@ import { getTitleForm } from '@app/shared/helper/form-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CardCreate {
-  handleCreateCard = output<string>();
-  titleModel = signal({ title: '', newElement: false });
-  titleForm = getTitleForm(this.titleModel);
-  @ViewChild('titleInput') titleInput = inject(ElementRef);
+  readonly handleCreateCard = output<string>();
+  readonly titleModel = signal({ title: '', newElement: false });
+  readonly titleForm = getTitleForm(this.titleModel);
+  @ViewChild('titleInput') private readonly titleInput!: ElementRef<HTMLTextAreaElement>;
 
   private setDefault() {
-    this.titleModel.set({ ...this.titleModel(), title: '', newElement: false });
+    this.titleModel.update((model) => ({ ...model, title: '', newElement: false }));
     this.titleForm().reset();
   }
 
   handleClickAddCard() {
-    this.titleModel.set({ ...this.titleModel(), newElement: true });
+    this.titleModel.update((model) => ({ ...model, newElement: true }));
   }
 
   handleClickCloseCreateCard() {
@@ -49,7 +48,7 @@ export class CardCreate {
     const eventTarget = e.relatedTarget as HTMLElement;
     if (eventTarget === null) {
       this.titleInput.nativeElement.focus();
-    } else if (eventTarget.className !== 'card-input') {
+    } else if (!eventTarget.classList.contains('card-input')) {
       this.setDefault();
     }
   }
@@ -58,7 +57,7 @@ export class CardCreate {
     return this.titleForm().invalid() || !(this.titleForm().dirty() || this.titleForm().touched());
   }
 
-  isInvalidTitle() {
+  get isInvalidTitle() {
     return this.titleForm.title().invalid() && this.titleForm.title().dirty();
   }
 }

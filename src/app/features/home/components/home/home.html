@@ -12,11 +12,11 @@
         </div>
       </a>
     }
-    <button class="board-add" (click)="handleClickAddBoard()">+ Додати дошку</button>
+    <button class="board-add" (click)="this.boardModal.set(true)">+ Додати дошку</button>
   </div>
-  @if (boardModal) {
+  @if (boardModal()) {
     <tr-board-create
-      (handleClose)="handleModalClickClose()"
+      (handleClose)="this.boardModal.set(false)"
       (handleCreateBoard)="handleCreateBoard($event)"
     ></tr-board-create>
   }

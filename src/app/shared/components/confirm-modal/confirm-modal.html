@@ -1,0 +1,11 @@
+@if (confirmService.state()) {
+  <div class="overlay">
+    <div class="modal">
+      <p class="message">{{ confirmService.state()!.message }}</p>
+      <div class="actions">
+        <button class="btn-confirm" (click)="confirmService.accept()">Підтвердити</button>
+        <button class="btn-cancel" (click)="confirmService.cancel()">Скасувати</button>
+      </div>
+    </div>
+  </div>
+}

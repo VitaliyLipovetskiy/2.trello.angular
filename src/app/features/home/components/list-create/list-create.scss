@@ -49,7 +49,6 @@
         color: white;
 
         &:hover {
-          cursor: pointer;
           background-color: $secondary-background-hover;
         }
 
@@ -65,7 +64,6 @@
 
         &:hover {
           color: $primary-color;
-          cursor: pointer;
           background-color: #3b3b3b;
         }
       }
@@ -85,7 +83,6 @@
     border-radius: 10px;
 
     &:hover {
-      cursor: pointer;
       background-color: $secondary-color;
     }
   }

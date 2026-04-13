@@ -5,30 +5,25 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-top: 3px;
   border-radius: 5px;
   font-size: 16px;
-  border: 1px solid transparent;
+  border: 1px solid $primary-background-element;
+  background-color: $primary-background-element;
   justify-content: center;
 
   &:hover {
-    cursor: pointer;
     border: 1px solid $primary-color;
   }
 
   input {
     padding: 10px;
     border-radius: 5px;
-    border: 1px solid transparent;
-    background-color: $primary-background-element;
     color: $primary-color;
+    border-color: transparent;
+    background-color: transparent;
+
+    backdrop-filter: blur(2px);
   }
 
   @include btn__action($top: 12px);
-
-  .title-invalid {
-    color: red;
-  }
-
-  @include error;
 }

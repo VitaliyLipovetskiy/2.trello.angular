@@ -2,7 +2,6 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
   output,
   signal,
   ViewChild,
@@ -20,10 +19,10 @@ import { getTitleForm } from '@app/shared/helper/form-helper';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ListCreate {
-  handleCreateList = output<string>();
-  titleModel = signal({ title: '', newElement: false });
-  titleForm = getTitleForm(this.titleModel);
-  @ViewChild('titleInput') titleInput = inject(ElementRef);
+  readonly handleCreateList = output<string>();
+  readonly titleModel = signal({ title: '', newElement: false });
+  readonly titleForm = getTitleForm(this.titleModel);
+  @ViewChild('titleInput') private readonly titleInput!: ElementRef<HTMLInputElement>;
 
   private setDefault() {
     this.titleModel.set({ title: '', newElement: false });
@@ -31,7 +30,7 @@ export class ListCreate {
   }
 
   handleClickAddList() {
-    this.titleModel.set({ ...this.titleModel(), newElement: true });
+    this.titleModel.update((model) => ({ ...model, newElement: true }));
   }
 
   handleClickCloseCreateList() {
@@ -50,7 +49,7 @@ export class ListCreate {
     const eventTarget = e.relatedTarget as HTMLElement;
     if (eventTarget === null) {
       this.titleInput.nativeElement.focus();
-    } else if (eventTarget.className !== 'list-input') {
+    } else if (!eventTarget.classList.contains('list-input')) {
       this.setDefault();
     }
   }
@@ -59,7 +58,7 @@ export class ListCreate {
     return this.titleForm().invalid() || !(this.titleForm().dirty() || this.titleForm().touched());
   }
 
-  isInvalidTitle() {
+  get isInvalidTitle() {
     return this.titleForm.title().invalid() && this.titleForm.title().dirty();
   }
 }

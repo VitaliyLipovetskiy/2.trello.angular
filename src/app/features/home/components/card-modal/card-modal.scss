@@ -1,0 +1,168 @@
+@use 'variables' as *;
+@use 'mixins' as *;
+
+.modals_wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(1px);
+
+  .modal {
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+    width: 70%;
+    max-width: 680px;
+    min-width: 480px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    background-color: white;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+
+    @include btn__action('close', 16px, 8px, 25px);
+
+    h1 {
+      text-align: center;
+      margin-bottom: 0;
+    }
+  }
+
+  .modal_header {
+    display: grid;
+    position: relative;
+    flex: 0 0;
+    min-height: 56px;
+    overflow: hidden;
+    border-bottom: 1px solid $secondary-color;
+  }
+
+  .modal_body {
+    display: flex;
+    flex-direction: row;
+    position: relative;
+
+    .form {
+      display: flex;
+      flex-direction: column;
+      margin: 10px;
+      width: 100%;
+
+      & .title {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 10px;
+
+        & input {
+          padding: 8px;
+          font-size: 18px;
+          border: none;
+          font-weight: 1000;
+        }
+
+        & label {
+          padding-left: 8px;
+          color: $primary-background-element;
+        }
+      }
+
+      & .description {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        border: 1px solid $secondary-color;
+        border-radius: 5px;
+
+        & textarea {
+          padding: 8px;
+          border-radius: 5px;
+          resize: none;
+          border: none;
+          min-height: 80px;
+        }
+
+        & .description_viewer {
+          padding: 8px;
+          min-height: 40px;
+          cursor: pointer;
+          white-space: pre-wrap;
+          word-break: break-word;
+          border: 1px solid $secondary-color;
+          border-radius: 5px;
+
+          strong {
+            font-weight: 700;
+          }
+
+          em {
+            font-style: italic;
+          }
+
+          del {
+            text-decoration: line-through;
+          }
+
+          h1,
+          h2,
+          h3 {
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            line-height: 1.2;
+          }
+
+          h1 {
+            font-size: 1.4em;
+          }
+
+          h2 {
+            font-size: 1.2em;
+          }
+
+          h3 {
+            font-size: 1.1em;
+          }
+
+          code {
+            padding: 0.2em 0.4em;
+            margin: 0;
+            font-size: 85%;
+            background-color: $secondary-background;
+            border-radius: 6px;
+            font-family: monospace;
+          }
+        }
+      }
+
+      @include error;
+    }
+
+    .modal_actions {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      margin: 10px;
+      width: 200px;
+      right: 0;
+      gap: 10px;
+
+      & span {
+        font-weight: 700;
+        text-align: center;
+      }
+
+      & button {
+        padding: 5px 20px;
+      }
+    }
+  }
+}
+
+body.overflow {
+  overflow: hidden;
+}
