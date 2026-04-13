@@ -34,7 +34,7 @@ export class BoardCreate implements OnInit {
     this.handleClose.emit();
   }
 
-  handleClickOutside(e: PointerEvent) {
+  handleClickOutside(e: PointerEvent | KeyboardEvent) {
     const target = e.target as HTMLElement;
     if (target.className.includes('modals_wrapper')) {
       this.handleClose.emit();

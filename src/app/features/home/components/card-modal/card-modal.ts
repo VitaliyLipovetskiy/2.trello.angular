@@ -140,7 +140,7 @@ export class CardModal implements OnInit {
     }
   }
 
-  handleClickOutside(e: MouseEvent) {
+  handleClickOutside(e: MouseEvent | KeyboardEvent) {
     const target = e.target as HTMLElement;
     if (target.classList.contains('modals_wrapper')) {
       this.handleModalClose();

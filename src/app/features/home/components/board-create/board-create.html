@@ -3,6 +3,7 @@
   trCloseByEscape
   (escapeAction)="handleClose.emit()"
   (click)="handleClickOutside($event)"
+  (keyup)="handleClickOutside($event)"
   (submit)="handleAcceptCreateBoard($event)"
 >
   <div class="modal">

@@ -4,6 +4,7 @@
     trCloseByEscape
     (escapeAction)="handleModalClose()"
     (click)="handleClickOutside($event)"
+    (keyup)="handleClickOutside($event)"
   >
     <div class="modal">
       <header class="modal_header">
@@ -28,7 +29,8 @@
                 <div class="error">{{ error.message }}</div>
               }
             }
-            <p>в колонці
+            <p>
+              в колонці
               <ins>{{ list()?.title }}</ins>
             </p>
           </div>
@@ -46,7 +48,9 @@
             } @else {
               <div
                 class="description_viewer"
+                tabindex="0"
                 (click)="toggleEditDescription()"
+                (keydown.enter)="toggleEditDescription()"
                 [innerHTML]="cardForm.description().value() | markdown"
               ></div>
             }

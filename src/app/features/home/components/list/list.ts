@@ -286,14 +286,19 @@ export class List implements OnInit {
     if (+sourceListId !== listSlot.id) {
       const sourceList = this.boardService.board()?.lists?.find((l) => l.id === +sourceListId);
       if (sourceList) {
-        sourceList.cardSlots
+        const sourceUpdates = sourceList.cardSlots
           .filter((s) => !!s.card && s.card.id !== +draggedCardId)
-          .sort((a, b) => a.card!.position - b.card!.position)
-          .forEach((slot, i) => {
-            if (i + 1 !== slot.card!.position) {
-              data.push({ id: slot.card!.id, position: i + 1, list_id: sourceList.id });
-            }
-          });
+          .map((slot, index) => ({
+            card: slot.card,
+            position: index + 1,
+          }))
+          .filter((slot) => slot.position !== slot.card!.position)
+          .map((slot) => ({
+            id: slot.card!.id,
+            position: slot.position,
+            list_id: sourceList.id,
+          }));
+        data.push(...sourceUpdates);
       }
     }
     let succeeded = false;
