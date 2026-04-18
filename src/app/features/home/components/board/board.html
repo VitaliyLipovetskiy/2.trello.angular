@@ -36,14 +36,14 @@
         />
         <button
           class="color-swatch"
+          aria-label="Вибрати колір фону"
           [class.color_swatch_empty]="!titleModel().backgroundColor"
           [style]="{
             backgroundColor: titleModel().backgroundColor,
             color: titleModel().backgroundColor,
           }"
           (click)="inputColor.click()"
-        >
-        </button>
+        ></button>
       </div>
     </div>
   </header>
