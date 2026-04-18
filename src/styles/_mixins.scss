@@ -4,25 +4,28 @@
   button {
     width: 100%;
     padding: 10px;
-    background-color: $primary-background;
-    border: 1px solid $primary-background;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: $glass-border;
     color: $primary-color;
     font-size: 16px;
-    border-radius: 5px;
+    border-radius: 10px;
     text-align: left;
+    backdrop-filter: $glass-blur-light;
+    transition: all 0.3s ease;
   }
 
   button:hover {
     cursor: pointer;
     background-color: $secondary-background;
-    border: 1px solid $primary-color;
+    border: $glass-border;
+    box-shadow: $glass-glow;
   }
 }
 
 @mixin error {
   .error {
     margin: 0;
-    color: red;
+    color: #ff6b6b;
     font-size: 12px;
   }
 }
@@ -38,6 +41,7 @@
     border-color: transparent;
     padding: 0;
     border-radius: 50%;
+    transition: all 0.2s ease;
 
     span {
       position: absolute;
@@ -46,7 +50,7 @@
       display: block;
       width: 100%;
       height: 2px;
-      background-color: darkgrey;
+      background-color: rgba(255, 255, 255, 0.5);
 
       &:first-child {
         transform: translate(-50%, -50%) rotate(45deg);
@@ -58,8 +62,7 @@
     }
 
     &:hover {
-      color: $primary-background;
-      background-color: $primary-color;
+      background-color: rgba(255, 255, 255, 0.2);
       cursor: pointer;
     }
   }

@@ -7,6 +7,8 @@
 
   h1 {
     text-align: center;
+    color: $primary-color;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
   }
 
   .container {
@@ -21,20 +23,39 @@
       width: 180px;
       height: 150px;
       padding: 10px;
-      border-radius: 20px;
-      background-color: #f0f0f0;
-      border: 1px solid $secondary-color;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: $glass-blur-light;
+      border: 2px dashed rgba(255, 255, 255, 0.2);
       font-size: 1rem;
       font-weight: bold;
+      color: $primary-color;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.12);
+        border-color: rgba(255, 255, 255, 0.35);
+        box-shadow: $glass-glow;
+      }
     }
 
     .board {
       position: relative;
       height: 130px;
-      border: 1px solid $secondary-color;
+      border: $glass-border;
       padding: 10px;
-      border-radius: 15px;
-      color: black;
+      border-radius: 16px;
+      color: $primary-color;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: $glass-blur-light;
+      box-shadow: $glass-shadow;
+      transition: all 0.3s ease;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: $glass-shadow, $glass-glow;
+      }
 
       @include btn__action();
     }
