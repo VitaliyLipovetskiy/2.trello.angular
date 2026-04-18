@@ -16,10 +16,12 @@
       [class.title-edit]="!titleModel().titleReadonly"
     >
       <input
+        autocomplete="off"
         [formField]="titleForm.title"
         [class.title-invalid]="titleForm().invalid() && titleForm().dirty()"
         (click)="handleTitleClick()"
         (blur)="handleTitleBlur($event)"
+        (keydown.escape)="handleEscapeTitle($event)"
       />
       @if (titleForm().invalid() && (titleForm().dirty() || titleForm().touched())) {
         @for (error of titleForm.title().errors(); track error) {
@@ -28,7 +30,7 @@
       }
     </div>
     <ol class="container">
-      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.card?.id ?? -1) {
+      @for (cardSlot of listSlot()?.cardSlots; track cardSlot.position) {
         @if (cardSlot.card) {
           <li
             #cardElement

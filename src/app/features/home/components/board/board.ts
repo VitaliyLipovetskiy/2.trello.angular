@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -29,7 +30,7 @@ import { ConfirmService } from '@app/shared/services/confirm.service';
   styleUrl: './board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Board implements OnInit {
+export class Board implements OnInit, AfterViewInit {
   @ViewChildren('listElement') listElements!: QueryList<ElementRef<HTMLElement>>;
   private readonly _destroy$ = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -44,6 +45,9 @@ export class Board implements OnInit {
 
   ngOnInit() {
     this.initBoard();
+  }
+
+  ngAfterViewInit() {
     this.titleForm.title().focusBoundControl();
   }
 
@@ -90,6 +94,7 @@ export class Board implements OnInit {
   }
 
   handleTitleBlur(e: Event) {
+    if (this.titleModel().titleReadonly) return;
     const { value } = e.target as HTMLInputElement;
     if (this.titleForm.title().invalid()) {
       this.titleModel.update((model) => ({
@@ -112,10 +117,23 @@ export class Board implements OnInit {
     }
   }
 
+  handleEscapeTitle(e: Event) {
+    e.stopPropagation();
+    this.titleModel.update((model) => ({
+      ...model,
+      title: this.board()?.title ?? '',
+      titleReadonly: true,
+    }));
+    this.titleForm().reset();
+    (e.target as HTMLElement).blur();
+  }
+
   handleCreateList(title: string) {
+    const lists = this.board()?.lists ?? [];
+    const maxPosition = Math.max(0, ...lists.map((l) => l.position));
     const listData: IListCreate = {
       title,
-      position: (this.board()?.lists?.length ?? 0) + 1,
+      position: maxPosition + 1,
     };
     this.boardService
       .createList(this.boardId(), listData)
