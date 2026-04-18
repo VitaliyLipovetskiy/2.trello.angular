@@ -49,6 +49,10 @@ export class CardModal implements OnInit {
       (this.cardForm.title().dirty() || this.cardForm.title().touched()),
   );
 
+  constructor() {
+    this._destroy$.onDestroy(() => this.boardService.setCardModal(false));
+  }
+
   ngOnInit() {
     this.initCard();
   }
@@ -95,14 +99,20 @@ export class CardModal implements OnInit {
     this.boardService.setCardModal(false);
   }
 
+  private escaping = false;
+
   handleEscape(event: Event) {
     event.stopPropagation();
+    this.escaping = true;
     this.setCardModel(this.card());
+    this.cardForm().reset();
     this.isEditingDescription.set(false);
     (event.target as HTMLElement).blur();
+    this.escaping = false;
   }
 
   handleInputOnBlur() {
+    if (this.escaping) return;
     this.isEditingDescription.set(false);
     if (this.cardForm.title().invalid()) {
       this.setCardModel(this.card());

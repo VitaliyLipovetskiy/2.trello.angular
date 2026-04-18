@@ -11,6 +11,7 @@ import {
   output,
   QueryList,
   signal,
+  untracked,
   ViewChildren,
 } from '@angular/core';
 import { ICardCreate, ICardsUpdate } from '@app/shared/interfaces';
@@ -48,7 +49,7 @@ export class List implements OnInit {
   constructor() {
     effect(() => {
       if (this.boardService.listUpdatedId() === this.listId()) {
-        this.boardService.clearListUpdatedId();
+        untracked(() => this.boardService.clearListUpdatedId());
       }
     });
   }
@@ -66,6 +67,7 @@ export class List implements OnInit {
   }
 
   handleTitleBlur(e: Event) {
+    if (this.titleModel().titleReadonly) return;
     const { value } = e.target as HTMLInputElement;
     if (this.titleForm.title().invalid()) {
       this.titleModel.update((model) => ({
@@ -94,6 +96,17 @@ export class List implements OnInit {
         )
         .subscribe();
     }
+  }
+
+  handleEscapeTitle(e: Event) {
+    e.stopPropagation();
+    this.titleModel.update((model) => ({
+      ...model,
+      title: this.listSlot()?.title ?? '',
+      titleReadonly: true,
+    }));
+    this.titleForm().reset();
+    (e.target as HTMLElement).blur();
   }
 
   handleCreateCard(title: string) {
@@ -231,9 +244,8 @@ export class List implements OnInit {
 
   handleDragLeave(e: DragEvent) {
     if (!e.dataTransfer?.types?.includes('card_id')) return;
-    const list = (e.currentTarget as HTMLDivElement).children[0];
-    const relatedTarget = e.relatedTarget as HTMLDivElement;
-    if (list.contains(relatedTarget)) {
+    const wrapper = e.currentTarget as HTMLElement;
+    if (wrapper.contains(e.relatedTarget as Node)) {
       return;
     }
     const listSlot = this.listSlot();

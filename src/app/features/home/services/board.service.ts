@@ -92,6 +92,9 @@ export class BoardService {
             custom: data.custom ?? currentBoard.custom,
           };
           this._board.set(board);
+          this._boards.update((boards) =>
+            boards.map((b) => (b.id === id ? { ...b, title: data.title } : b)),
+          );
           this.toastr.success('Board updated successfully!', 'Success!');
         } else {
           this.toastr.error('Board not updated!', 'Error!');

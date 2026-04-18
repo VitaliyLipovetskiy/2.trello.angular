@@ -9,10 +9,12 @@
         >
           <input
             type="text"
+            autocomplete="off"
             [formField]="titleForm.title"
             [class.title-invalid]="isInvalidTitle"
             (click)="handleTitleClick()"
             (blur)="handleTitleBlur($event)"
+            (keydown.escape)="handleEscapeTitle($event)"
           />
           @if (isInvalidTitle) {
             @for (error of titleForm.title().errors(); track error) {
@@ -34,14 +36,14 @@
         />
         <button
           class="color-swatch"
+          aria-label="Вибрати колір фону"
+          [class.color_swatch_empty]="!titleModel().backgroundColor"
           [style]="{
             backgroundColor: titleModel().backgroundColor,
             color: titleModel().backgroundColor,
           }"
           (click)="inputColor.click()"
-        >
-          C
-        </button>
+        ></button>
       </div>
     </div>
   </header>
