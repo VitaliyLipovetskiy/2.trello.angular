@@ -4,7 +4,7 @@
 .add-card {
   display: flex;
   flex-direction: column;
-  background-color: $primary-background;
+  background: transparent;
   border: none;
   margin: 6px;
   border-radius: 10px;
@@ -18,16 +18,17 @@
 
   textarea {
     padding: 10px;
-    border-radius: 5px;
-    border: 1px solid $secondary-background;
-    background: $primary-background-element;
+    border-radius: 8px;
+    border: $glass-border;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: $glass-blur-light;
     color: $primary-color;
     font-size: 16px;
     resize: none;
   }
 
   .title-invalid {
-    color: red;
+    color: #ff6b6b;
   }
 
   @include error;
@@ -39,21 +40,23 @@
   gap: 5px;
 
   button {
-    padding: 5px 10px 5px 10px;
-    border-radius: 5px;
+    padding: 5px 10px;
+    border-radius: 8px;
     font-size: 16px;
-    border: none;
+    border: $glass-border;
+    transition: all 0.3s ease;
   }
 }
 
 .card-btn-accept {
-  background-color: $secondary-background;
+  background: $secondary-background;
   color: white;
 }
 
 .card-btn-accept:hover {
   cursor: pointer;
-  background-color: $secondary-background-hover;
+  background: $secondary-background-hover;
+  box-shadow: $glass-glow;
 }
 
 .card-btn-accept.disabled {
@@ -62,14 +65,13 @@
 }
 
 .card-btn-close {
-  background-color: $primary-background;
+  background: rgba(255, 255, 255, 0.06);
   color: $primary-color;
 }
 
 .card-btn-close:hover {
-  color: $primary-color;
   cursor: pointer;
-  background-color: #3b3b3b;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .card-add-btn {
@@ -78,13 +80,14 @@
   padding: 10px;
   font-size: 16px;
   align-items: center;
-  color: $secondary-background;
-  background-color: $primary-background;
+  color: rgba(180, 170, 255, 0.8);
+  background: transparent;
   border: none;
   border-radius: 10px;
+  transition: all 0.3s ease;
 }
 
 .card-add-btn:hover {
   cursor: pointer;
-  background-color: $secondary-color;
+  background: rgba(255, 255, 255, 0.08);
 }

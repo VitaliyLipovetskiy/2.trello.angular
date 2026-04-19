@@ -8,8 +8,8 @@
   width: 100%;
   height: 100%;
   z-index: 100;
-  background-color: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(1px);
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(4px);
 
   .modal {
     display: flex;
@@ -21,9 +21,13 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    background-color: white;
+    background: rgba(30, 30, 50, 0.85);
+    backdrop-filter: $glass-blur;
+    border: $glass-border;
     transform: translate(-50%, -50%);
-    border-radius: 10px;
+    border-radius: 16px;
+    box-shadow: $glass-shadow;
+    color: $primary-color;
 
     @include btn__action('close', 16px, 8px, 25px);
 
@@ -39,7 +43,7 @@
     flex: 0 0;
     min-height: 56px;
     overflow: hidden;
-    border-bottom: 1px solid $secondary-color;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
   .modal_body {
@@ -63,11 +67,13 @@
           font-size: 18px;
           border: none;
           font-weight: 1000;
+          background: transparent;
+          color: $primary-color;
         }
 
         & label {
           padding-left: 8px;
-          color: $primary-background-element;
+          color: rgba(255, 255, 255, 0.5);
         }
       }
 
@@ -75,15 +81,17 @@
         display: flex;
         flex-direction: column;
         margin-top: 10px;
-        border: 1px solid $secondary-color;
-        border-radius: 5px;
+        border: $glass-border;
+        border-radius: 10px;
 
         & textarea {
           padding: 8px;
-          border-radius: 5px;
+          border-radius: 10px;
           resize: none;
           border: none;
           min-height: 80px;
+          background: rgba(255, 255, 255, 0.05);
+          color: $primary-color;
         }
 
         & .description_viewer {
@@ -92,8 +100,9 @@
           cursor: pointer;
           white-space: pre-wrap;
           word-break: break-word;
-          border: 1px solid $secondary-color;
-          border-radius: 5px;
+          border: $glass-border;
+          border-radius: 10px;
+          color: $primary-color;
 
           strong {
             font-weight: 700;
@@ -132,7 +141,7 @@
             padding: 0.2em 0.4em;
             margin: 0;
             font-size: 85%;
-            background-color: $secondary-background;
+            background-color: rgba(120, 100, 255, 0.3);
             border-radius: 6px;
             font-family: monospace;
           }
@@ -154,10 +163,26 @@
       & span {
         font-weight: 700;
         text-align: center;
+        color: $primary-color;
       }
 
       & button {
         padding: 5px 20px;
+        background: rgba(255, 255, 255, 0.08);
+        border: $glass-border;
+        color: $primary-color;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+
+        &:hover:not(:disabled) {
+          background: $secondary-background;
+          cursor: pointer;
+        }
+
+        &:disabled {
+          opacity: 0.4;
+          cursor: not-allowed;
+        }
       }
     }
   }

@@ -8,6 +8,7 @@
         [formField]="titleForm.title"
         [class.title-invalid]="isInvalidTitle"
         (blur)="handleBlurTitle($event)"
+        (keydown.escape)="handleEscape($event)"
       />
       @if (isInvalidTitle) {
         @for (error of titleForm.title().errors(); track error) {

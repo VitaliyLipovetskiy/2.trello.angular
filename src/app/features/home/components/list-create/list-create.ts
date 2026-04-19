@@ -44,6 +44,11 @@ export class ListCreate {
     this.setDefault();
   }
 
+  handleEscape(event: Event) {
+    event.stopPropagation();
+    this.setDefault();
+  }
+
   handleBlurTitle(e: FocusEvent) {
     e.preventDefault();
     const eventTarget = e.relatedTarget as HTMLElement;

@@ -4,30 +4,33 @@
 .list-add {
   display: flex;
   flex-direction: column;
-  width: 260px;
-  background-color: $primary-background;
+  width: 280px;
+  background: transparent;
   border: none;
   margin: 5px;
-  border-radius: 10px;
+  border-radius: 16px;
 
   .list-new {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    border-radius: 10px;
-    padding: 5px;
+    border-radius: 16px;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: $glass-blur;
+    border: $glass-border;
 
     & input {
       padding: 10px;
-      border-radius: 5px;
-      border: 1px solid $secondary-background;
-      background: $primary-background-element;
+      border-radius: 8px;
+      border: $glass-border;
+      background: rgba(255, 255, 255, 0.08);
       color: $primary-color;
       font-size: 16px;
     }
 
     .title-invalid {
-      color: red;
+      color: #ff6b6b;
     }
 
     @include error;
@@ -38,18 +41,20 @@
       gap: 5px;
 
       button {
-        padding: 5px 10px 5px 10px;
-        border-radius: 5px;
+        padding: 5px 10px;
+        border-radius: 8px;
         font-size: 16px;
-        border: none;
+        border: $glass-border;
+        transition: all 0.3s ease;
       }
 
       & .list-btn-accept {
-        background-color: $secondary-background;
+        background: $secondary-background;
         color: white;
 
         &:hover {
-          background-color: $secondary-background-hover;
+          background: $secondary-background-hover;
+          box-shadow: $glass-glow;
         }
 
         &.disabled {
@@ -59,12 +64,11 @@
       }
 
       & .list-btn-close {
-        background-color: $primary-background;
+        background: rgba(255, 255, 255, 0.06);
         color: $primary-color;
 
         &:hover {
-          color: $primary-color;
-          background-color: #3b3b3b;
+          background: rgba(255, 255, 255, 0.15);
         }
       }
     }
@@ -73,17 +77,21 @@
   &-btn {
     display: flex;
     flex-direction: row;
-    min-width: 260px;
+    min-width: 280px;
     padding: 10px;
     font-size: 16px;
     align-items: center;
     color: $primary-color;
-    background-color: $primary-background-element;
-    border: none;
-    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: $glass-blur-light;
+    border: $glass-border;
+    border-radius: 16px;
+    transition: all 0.3s ease;
 
     &:hover {
-      background-color: $secondary-color;
+      background: rgba(255, 255, 255, 0.15);
+      box-shadow: $glass-glow;
+      cursor: pointer;
     }
   }
 }

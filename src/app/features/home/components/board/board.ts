@@ -1,5 +1,4 @@
 import {
-  AfterViewInit,
   ChangeDetectionStrategy,
   Component,
   DestroyRef,
@@ -30,7 +29,7 @@ import { ConfirmService } from '@app/shared/services/confirm.service';
   styleUrl: './board.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class Board implements OnInit, AfterViewInit {
+export class Board implements OnInit {
   @ViewChildren('listElement') listElements!: QueryList<ElementRef<HTMLElement>>;
   private readonly _destroy$ = inject(DestroyRef);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -45,10 +44,6 @@ export class Board implements OnInit, AfterViewInit {
 
   ngOnInit() {
     this.initBoard();
-  }
-
-  ngAfterViewInit() {
-    this.titleForm.title().focusBoundControl();
   }
 
   private initBoard(): void {
