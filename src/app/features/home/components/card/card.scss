@@ -16,7 +16,8 @@
   &:hover {
     background: rgba(255, 255, 255, 0.16);
     border-color: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), $glass-glow;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15),
+    $glass-glow;
     transform: translateY(-1px);
   }
 

@@ -44,6 +44,11 @@ export class CardCreate {
     this.setDefault();
   }
 
+  handleEscape(event: Event) {
+    event.stopPropagation();
+    this.setDefault();
+  }
+
   handleBlurTitle(e: FocusEvent) {
     const eventTarget = e.relatedTarget as HTMLElement;
     if (eventTarget === null) {
