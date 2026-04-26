@@ -1,4 +1,5 @@
 @use 'variables' as *;
+@use 'mixins' as *;
 
 .overlay {
   position: fixed;
@@ -9,10 +10,14 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+
+  @include onMobile {
+    padding: 0 16px;
+  }
 }
 
 .modal {
-  background-color: $primary-background;
+  background-color: #2a2a3e;
   border-radius: 12px;
   padding: 28px 32px;
   min-width: 320px;
@@ -20,7 +25,13 @@
   display: flex;
   flex-direction: column;
   gap: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  @include onMobile {
+    min-width: unset;
+    width: calc(100vw - 32px);
+    padding: 16px;
+  }
 }
 
 .message {

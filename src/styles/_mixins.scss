@@ -67,3 +67,33 @@
     }
   }
 }
+
+@mixin onLargeDesktop {
+  @media (max-width: 1600px) {
+    @content;
+  }
+}
+
+@mixin onSmallDesktop {
+  @media (max-width: 1024px) {
+    @content;
+  }
+}
+
+@mixin onLargeTablet {
+  @media (max-width: 767px) {
+    @content;
+  }
+}
+
+@mixin onSmallTablet {
+  @media (max-width: 639px) {
+    @content;
+  }
+}
+
+@mixin onMobile {
+  @media (max-width: 440px) {
+    @content;
+  }
+}

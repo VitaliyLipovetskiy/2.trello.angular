@@ -20,6 +20,12 @@ export const getTitleForm = (model: WritableSignal<ITitleModel>) =>
     });
     readonly(schemaPath.title, () => model().titleReadonly ?? false);
     hidden(schemaPath.title, () => !(model().newElement ?? true));
+    // validate(schemaPath.title, ({ value }) => {
+    //   const v = value();
+    //   return {
+    //     kind: 'pattern',
+    //     message: 'Поле може містити лише літери, 0-9, пробіли, крапки, "-" і "_"',
+    //   };
   });
 
 export const getCardModalForm = (model: WritableSignal<ICardModel>) =>

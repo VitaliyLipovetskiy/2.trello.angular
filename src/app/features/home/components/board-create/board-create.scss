@@ -26,6 +26,11 @@
     border-radius: 16px;
     box-shadow: $glass-shadow;
     color: $primary-color;
+    box-sizing: border-box;
+
+    @include onMobile {
+      width: calc(100vw - 32px);
+    }
 
     @include btn__action($name: 'close', $size: 25px);
 

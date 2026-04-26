@@ -111,6 +111,18 @@ export class CardModal implements OnInit {
     this.escaping = false;
   }
 
+  // submit(event: Event) {
+  //   event.preventDefault();
+  //   submit(this.cardForm,
+  //     async (f) => {
+  //       alert( f);
+  //     },
+  //   );
+  //   submit(this.cardForm, async (f) => {
+  //     alert( f.title);
+  //   });
+  // }
+
   handleInputOnBlur() {
     if (this.escaping) return;
     this.isEditingDescription.set(false);
@@ -119,6 +131,7 @@ export class CardModal implements OnInit {
       this.cardForm().reset();
       return;
     }
+
     if (
       this.cardModel().title.trim() !== this.card()?.card?.title?.trim() ||
       this.cardModel().description.trim() !== this.card()?.card?.description?.trim()

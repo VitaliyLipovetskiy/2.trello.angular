@@ -21,6 +21,7 @@ import { BoardService } from '@app/features/home/services/board.service';
 import { getTitleForm } from '@app/shared/helper/form-helper';
 import { drawRoundedRect } from '@app/shared/helper/canvas.helper';
 import { ConfirmService } from '@app/shared/services/confirm.service';
+import { isListDrag, setActiveDragType } from '@app/shared/helper/drag-state.helper';
 
 @Component({
   selector: 'tr-board',
@@ -155,7 +156,8 @@ export class Board implements OnInit {
 
   handleListDragStart(e: DragEvent, listId: number) {
     if (!e.dataTransfer) return;
-    e.dataTransfer.setData('list_id', listId.toString());
+    setActiveDragType('list');
+    e.dataTransfer.setData('text/plain', listId.toString());
     e.dataTransfer.effectAllowed = 'move';
     this.boardService.setListDragged(listId);
 
@@ -173,34 +175,37 @@ export class Board implements OnInit {
     const canvasWidth = listW + padding * 2;
     const canvasHeight = listH + padding * 2;
 
+    const dpr = window.devicePixelRatio || 1;
     const canvas = document.createElement('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    canvas.width = canvasWidth * dpr;
+    canvas.height = canvasHeight * dpr;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
+      ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.save();
       ctx.translate(canvasWidth / 2, canvasHeight / 2);
       ctx.rotate((3 * Math.PI) / 180);
-      ctx.scale(1.02, 1.02);
 
       ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
-      ctx.shadowBlur = 12;
-      ctx.shadowOffsetX = 2;
-      ctx.shadowOffsetY = 6;
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetX = 4;
+      ctx.shadowOffsetY = 8;
 
       // List background
       const x = -listW / 2;
       const y = -listH / 2;
-      ctx.fillStyle = '#222';
+      const cssVars = getComputedStyle(document.documentElement);
       drawRoundedRect(ctx, x, y, listW, listH, 10);
+      ctx.fillStyle = '#211e43';
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = cssVars.getPropertyValue('--color-bg-element').trim();
       ctx.fill();
 
-      ctx.shadowColor = 'transparent';
-
       // Title
-      ctx.fillStyle = 'white';
+      ctx.fillStyle = cssVars.getPropertyValue('--color-primary').trim() || 'white';
       ctx.font = 'bold 16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textBaseline = 'middle';
       ctx.fillText(title, x + 12, y + 22);
@@ -221,11 +226,11 @@ export class Board implements OnInit {
 
         if (cardY + cardH > y + listH - 5) return;
 
-        ctx.fillStyle = '#3b3b3b';
+        ctx.fillStyle = cssVars.getPropertyValue('--color-bg-element').trim() || '#211e43';
         drawRoundedRect(ctx, cardX, cardY, cardW, cardH, cardRadius);
         ctx.fill();
 
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = cssVars.getPropertyValue('--color-primary').trim() || 'white';
         ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'middle';
         ctx.fillText(cards[i] ?? '', cardX + 10, cardY + cardH / 2, cardW - 20);
@@ -244,17 +249,20 @@ export class Board implements OnInit {
 
       ctx.restore();
 
-      canvas.style.position = 'fixed';
-      canvas.style.top = '-9999px';
-      document.body.appendChild(canvas);
+      const img = new Image();
+      img.src = canvas.toDataURL('image/png');
+      img.width = canvasWidth;
+      img.height = canvasHeight;
+      img.style.cssText = 'position:fixed;top:-9999px;left:0;pointer-events:none;';
+      document.body.appendChild(img);
 
       e.dataTransfer.setDragImage(
-        canvas,
+        img,
         e.clientX - rect.left + padding,
         e.clientY - rect.top + padding,
       );
 
-      setTimeout(() => canvas.remove(), 100);
+      setTimeout(() => img.remove(), 100);
     }
 
     setTimeout(() => {
@@ -264,12 +272,13 @@ export class Board implements OnInit {
 
   handleListDragEnd(e: DragEvent) {
     (e.currentTarget as HTMLElement).classList.remove('dragging');
+    setActiveDragType(null);
     this.boardService.setListDragged(undefined);
     this.boardService.setListPlaceholderIndex(undefined);
   }
 
   handleListDragOver(e: DragEvent) {
-    if (!e.dataTransfer?.types?.includes('list_id')) return;
+    if (!isListDrag()) return;
     e.preventDefault();
 
     const elements = this.listElements.toArray();
@@ -292,15 +301,16 @@ export class Board implements OnInit {
   }
 
   handleListDragLeave(e: DragEvent) {
-    if (!e.dataTransfer?.types?.includes('list_id')) return;
+    if (!isListDrag()) return;
     const ol = e.currentTarget as HTMLElement;
     if (ol.contains(e.relatedTarget as Node)) return;
     this.boardService.setListPlaceholderIndex(undefined);
   }
 
   handleListDrop(e: DragEvent) {
+    if (!isListDrag()) return;
     e.preventDefault();
-    const draggedListId = +(e.dataTransfer?.getData('list_id') ?? 0);
+    const draggedListId = +(e.dataTransfer?.getData('text/plain') ?? 0);
     const placeholderIndex = this.listPlaceholderIndex();
     const lists = this.board()?.lists ?? [];
     const boardId = this.boardId();

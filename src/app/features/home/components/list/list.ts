@@ -24,6 +24,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getTitleForm } from '@app/shared/helper/form-helper';
 import { drawRoundedRect } from '@app/shared/helper/canvas.helper';
 import { RouterLink, RouterOutlet } from '@angular/router';
+import { isCardDrag, setActiveDragType } from '@app/shared/helper/drag-state.helper';
 
 @Component({
   selector: 'tr-list',
@@ -141,8 +142,11 @@ export class List implements OnInit {
     if (!e.dataTransfer) {
       return;
     }
-    e.dataTransfer.setData('card_id', cardId ?? '');
-    e.dataTransfer.setData('source_list_id', this.listId().toString());
+    setActiveDragType('card');
+    e.dataTransfer.setData(
+      'text/plain',
+      JSON.stringify({ cardId, sourceListId: this.listId().toString() }),
+    );
     e.dataTransfer.effectAllowed = 'move';
 
     const rect = target.getBoundingClientRect();
@@ -154,12 +158,14 @@ export class List implements OnInit {
     const canvasWidth = rect.width + padding * 2;
     const canvasHeight = rect.height + padding * 2;
 
+    const dpr = window.devicePixelRatio || 1;
     const canvas = document.createElement('canvas');
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    canvas.width = canvasWidth * dpr;
+    canvas.height = canvasHeight * dpr;
     const ctx = canvas.getContext('2d');
 
     if (ctx) {
+      ctx.scale(dpr, dpr);
       ctx.clearRect(0, 0, canvasWidth, canvasHeight);
       ctx.save();
       ctx.translate(canvasWidth / 2, canvasHeight / 2);
@@ -177,12 +183,15 @@ export class List implements OnInit {
       const w = rect.width;
       const h = rect.height;
       drawRoundedRect(ctx, x, y, w, h, 5);
+      ctx.fillStyle = '#211e43';
+      ctx.fill();
+      ctx.shadowColor = 'transparent';
+      const cssVars = getComputedStyle(document.documentElement);
+      ctx.fillStyle = cssVars.getPropertyValue('--color-bg-element').trim();
       ctx.fill();
 
-      ctx.shadowColor = 'transparent';
-
       if (text) {
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = cssVars.getPropertyValue('--color-primary').trim();
         ctx.font = '16px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
         ctx.textBaseline = 'middle';
         ctx.fillText(text, -rect.width / 2 + 12, 0);
@@ -190,14 +199,17 @@ export class List implements OnInit {
 
       ctx.restore();
 
-      canvas.style.position = 'fixed';
-      canvas.style.top = '-9999px';
-      document.body.appendChild(canvas);
+      const img = new Image();
+      img.src = canvas.toDataURL('image/png');
+      img.width = canvasWidth;
+      img.height = canvasHeight;
+      img.style.cssText = 'position:fixed;top:-9999px;left:0;pointer-events:none;';
+      document.body.appendChild(img);
 
-      e.dataTransfer.setDragImage(canvas, canvasWidth / 2, canvasHeight / 2);
+      e.dataTransfer.setDragImage(img, canvasWidth / 2, canvasHeight / 2);
 
       setTimeout(() => {
-        canvas.remove();
+        img.remove();
       }, 100);
     }
 
@@ -207,15 +219,14 @@ export class List implements OnInit {
   }
 
   handleDragEnd(e: DragEvent) {
+    setActiveDragType(null);
     const target = e.currentTarget as HTMLLIElement;
     target.classList.remove('dragging');
     this.boardService.setCardDragged(undefined, undefined);
   }
 
   handleDragOver(e: DragEvent) {
-    if (!e.dataTransfer?.types?.includes('card_id')) {
-      return;
-    }
+    if (!isCardDrag()) return;
     e.preventDefault();
 
     const listSlot = this.listSlot();
@@ -243,7 +254,7 @@ export class List implements OnInit {
   }
 
   handleDragLeave(e: DragEvent) {
-    if (!e.dataTransfer?.types?.includes('card_id')) return;
+    if (!isCardDrag()) return;
     const wrapper = e.currentTarget as HTMLElement;
     if (wrapper.contains(e.relatedTarget as Node)) {
       return;
@@ -257,12 +268,15 @@ export class List implements OnInit {
 
   handleDrop(e: DragEvent) {
     e.preventDefault();
-    const draggedCardId = e.dataTransfer?.getData('card_id');
-    const sourceListId = e.dataTransfer?.getData('source_list_id');
+    if (!isCardDrag() || !e.dataTransfer) {
+      return;
+    }
+    const { cardId, sourceListId } = JSON.parse(e.dataTransfer.getData('text/plain') || '{}');
+
     const listSlot = this.listSlot();
     const boardId = this.boardId();
 
-    if (!draggedCardId || !sourceListId || !boardId || !listSlot) {
+    if (!cardId || !sourceListId || !boardId || !listSlot) {
       return;
     }
 
@@ -276,16 +290,14 @@ export class List implements OnInit {
 
     // Other cards in target list sorted by display position (positions shifted by showPlaceholderSlot)
     const otherCards = listSlot.cardSlots
-      .filter((s) => !!s.card && s.card.id !== +draggedCardId)
+      .filter((s) => !!s.card && s.card.id !== +cardId)
       .sort((a, b) => a.position - b.position);
 
     // Dragged card goes after all other cards that are before the placeholder
     const insertIndex = otherCards.filter((s) => s.position < placeholderPosition).length;
     const draggedNewPos = insertIndex + 1;
 
-    const data: ICardsUpdate[] = [
-      { id: +draggedCardId, position: draggedNewPos, list_id: listSlot.id },
-    ];
+    const data: ICardsUpdate[] = [{ id: +cardId, position: draggedNewPos, list_id: listSlot.id }];
 
     otherCards.forEach((slot, i) => {
       const newPos = i < insertIndex ? i + 1 : i + 2;
@@ -299,7 +311,7 @@ export class List implements OnInit {
       const sourceList = this.boardService.board()?.lists?.find((l) => l.id === +sourceListId);
       if (sourceList) {
         const sourceUpdates = sourceList.cardSlots
-          .filter((s) => !!s.card && s.card.id !== +draggedCardId)
+          .filter((s) => !!s.card && s.card.id !== +cardId)
           .map((slot, index) => ({
             card: slot.card,
             position: index + 1,
