@@ -12,3 +12,12 @@ $glass-blur: blur(16px);
 $glass-blur-light: blur(10px);
 $glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 $glass-glow: 0 0 20px rgba(120, 100, 255, 0.15);
+
+:root {
+  --color-primary: #{$primary-color};
+  --color-secondary: #{$secondary-color};
+  --color-bg: #{$primary-background};
+  --color-bg-element: #{$primary-background-element};
+  --color-accent: #{$secondary-background};
+  --color-accent-hover: #{$secondary-background-hover};
+}

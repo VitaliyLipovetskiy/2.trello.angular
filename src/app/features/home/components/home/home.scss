@@ -9,6 +9,11 @@
     text-align: center;
     color: $primary-color;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    padding: 0 16px;
+
+    @include onMobile {
+      font-size: 1.4em;
+    }
   }
 
   .container {

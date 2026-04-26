@@ -12,14 +12,14 @@
   backdrop-filter: blur(4px);
 
   .modal {
+    position: fixed;
     display: flex;
     flex-direction: column;
     max-height: 80vh;
     width: 70%;
-    max-width: 680px;
+    max-width: 860px;
     min-width: 480px;
-    position: fixed;
-    top: 50%;
+    top: 40%;
     left: 50%;
     background: rgba(30, 30, 50, 0.85);
     backdrop-filter: $glass-blur;
@@ -28,6 +28,21 @@
     border-radius: 16px;
     box-shadow: $glass-shadow;
     color: $primary-color;
+
+    &::-webkit-scrollbar {
+      width: 0;
+    }
+
+    &.visible {
+      display: block;
+    }
+
+    @include onSmallTablet {
+      width: 95%;
+      min-width: unset;
+      max-height: 90vh;
+      top: 50%;
+    }
 
     @include btn__action('close', 16px, 8px, 25px);
 
@@ -50,12 +65,24 @@
     display: flex;
     flex-direction: row;
     position: relative;
+    overflow-y: auto;
+
+    @include onSmallTablet {
+      flex-direction: column;
+    }
 
     .form {
       display: flex;
       flex-direction: column;
       margin: 10px;
       width: 100%;
+      box-sizing: border-box;
+
+      @include onSmallTablet {
+        margin: 0;
+        padding: 10px;
+        width: 100%;
+      }
 
       & .title {
         display: flex;
@@ -69,6 +96,8 @@
           font-weight: 1000;
           background: transparent;
           color: $primary-color;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         & label {
@@ -92,6 +121,8 @@
           min-height: 80px;
           background: rgba(255, 255, 255, 0.05);
           color: $primary-color;
+          width: 100%;
+          box-sizing: border-box;
         }
 
         & .description_viewer {
@@ -159,6 +190,22 @@
       width: 200px;
       right: 0;
       gap: 10px;
+
+      @include onSmallTablet {
+        width: calc(100% - 20px);
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+
+        & span {
+          width: 100%;
+        }
+
+        & button {
+          flex: 1 1 calc(50% - 5px);
+          text-align: center;
+        }
+      }
 
       & span {
         font-weight: 700;
